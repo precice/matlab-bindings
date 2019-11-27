@@ -56,6 +56,8 @@ However, using the OOP variant is **significantly** slower than the normal in pr
 
 # Main Contributors
 
-* Dominik Volland
-* Gilberto Lem Carillo
-* Benjamin Rüth
+* [Dominik Volland](https://github.com/Dominanz)
+* [Gilberto Lem](https://github.com/gilbertolem)
+* [Benjamin Rüth](https://github.com/BenjaminRueth)
+* [Frédéric Simonis](https://github.com/fsimonis)
+* [Benjamin Uekermann](https://github.com/uekerman)
