@@ -54,7 +54,7 @@ This has the following advantages:
 - If the gateway function crashes, then MATLAB will not crash. Only the mexHost object will crash.
 However, using the OOP variant is **significantly** slower than the normal in process
 
-# Main Contributors
+# Contributors
 
 * [Dominik Volland](https://github.com/Dominanz)
 * [Gilberto Lem](https://github.com/gilbertolem)
