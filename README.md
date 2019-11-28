@@ -60,4 +60,3 @@ However, using the OOP variant is **significantly** slower than the normal in pr
 * [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
 * [Benjamin Rüth](https://github.com/BenjaminRueth)
 * [Frédéric Simonis](https://github.com/fsimonis)
-* [Benjamin Uekermann](https://github.com/uekerman)
