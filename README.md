@@ -4,7 +4,7 @@ These bindings allow to use preCICE with MATLAB based on the C++ MEX and C data 
 
 ## Requirements
 
-MATLAB R2018a or later is required. The bindings were tested on R2018b and R2019a.
+MATLAB R2018a or later is required. The bindings were tested on R2018b, R2019a and R2019b.
 
 ## Restrictions
 
