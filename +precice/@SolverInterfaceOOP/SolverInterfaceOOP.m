@@ -24,7 +24,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
     end
     
     methods
-        %% Construction and configuration
+        %% Construction
         % Constructor
         function obj = SolverInterface(SolverName,configFileName,solverProcessIndex,solverProcessSize)
             %SOLVERINTERFACE Construct an instance of this class

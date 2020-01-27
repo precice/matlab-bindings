@@ -81,11 +81,11 @@ public:
         // Abort if constructor was not called before, or if constructor 
         // was called on an existing solverInterface
         if (functionID==FunctionID::_constructor_ && constructed) {
-            myMexPrint("Constructor was called but interface is alread construced.");
+            myMexPrint("Constructor was called but interface is already constructed.");
             return;
         }
         if (!constructed && functionID!=FunctionID::_constructor_) {
-            myMexPrint("Interface was not construced before.");
+            myMexPrint("Interface was not constructed before.");
             return;
         }
         
@@ -102,9 +102,8 @@ public:
                 const StringArray configFileName = inputs[2];
                 const TypedArray<int32_t> procIndex = inputs[3];
                 const TypedArray<int32_t> procSize = inputs[4];
-                interface = new SolverInterface(solverName[0],procIndex[0],procSize[0]);
+                interface = new SolverInterface(solverName[0],configFileName[0],procIndex[0],procSize[0]);
                 constructed = true;
-                interface->configure(configFileName[0]);
                 break;
             }
             case FunctionID::_destructor_:
