@@ -26,6 +26,7 @@ enum class FunctionID {
     isTimestepComplete = 24,
     hasToEvaluateSurrogateModel = 25,
     hasToEvaluateFineModel = 26,
+    getVersionInformation = 27,
     
     isActionRequired = 30,
     fulfilledAction = 31,
@@ -177,6 +178,12 @@ public:
             {
                 bool result = interface->hasToEvaluateFineModel();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
+                break;
+            }
+            case FunctionID::getVersionInformation:
+            {
+                StringArray version = interface->getVersionInformation();
+                outputs[0] = factory.createArray({1,1}, {version});
                 break;
             }
             

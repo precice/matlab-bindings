@@ -107,6 +107,11 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         function bool = hasToEvaluateFineModel(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(26));
         end
+
+        % getVersionInformation
+        function s = getVersionInformation(obj)
+            s = feval(obj.oMexHost,"preciceGateway",uint8(27));
+        end
         
         %% Action Methods
         % isActionRequired
