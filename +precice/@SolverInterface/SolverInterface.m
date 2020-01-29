@@ -18,7 +18,7 @@ classdef SolverInterface < handle
     end
     
     methods
-        %% Construction and configuration
+        %% Construction
         % Constructor
         function obj = SolverInterface(SolverName,configFileName,solverProcessIndex,solverProcessSize)
             %SOLVERINTERFACE Construct an instance of this class
@@ -94,7 +94,12 @@ classdef SolverInterface < handle
         
         % hasToEvaluateFineModel
         function bool = hasToEvaluateFineModel(obj)
-            bool = preciceGateway(uint8(25));
+            bool = preciceGateway(uint8(26));
+        end
+
+        % getVersionInformation
+        function s = getVersionInformation(obj)
+            s = preciceGateway(uint8(27));
         end
         
         %% Action Methods

@@ -24,7 +24,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
     end
     
     methods
-        %% Construction and configuration
+        %% Construction
         % Constructor
         function obj = SolverInterface(SolverName,configFileName,solverProcessIndex,solverProcessSize)
             %SOLVERINTERFACE Construct an instance of this class
@@ -106,6 +106,11 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         % hasToEvaluateFineModel
         function bool = hasToEvaluateFineModel(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(26));
+        end
+
+        % getVersionInformation
+        function s = getVersionInformation(obj)
+            s = feval(obj.oMexHost,"preciceGateway",uint8(27));
         end
         
         %% Action Methods

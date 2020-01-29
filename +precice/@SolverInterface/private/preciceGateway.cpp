@@ -26,6 +26,7 @@ enum class FunctionID {
     isTimestepComplete = 24,
     hasToEvaluateSurrogateModel = 25,
     hasToEvaluateFineModel = 26,
+    getVersionInformation = 27,
     
     isActionRequired = 30,
     fulfilledAction = 31,
@@ -81,11 +82,11 @@ public:
         // Abort if constructor was not called before, or if constructor 
         // was called on an existing solverInterface
         if (functionID==FunctionID::_constructor_ && constructed) {
-            myMexPrint("Constructor was called but interface is alread construced.");
+            myMexPrint("Constructor was called but interface is already constructed.");
             return;
         }
         if (!constructed && functionID!=FunctionID::_constructor_) {
-            myMexPrint("Interface was not construced before.");
+            myMexPrint("Interface was not constructed before.");
             return;
         }
         
@@ -102,9 +103,8 @@ public:
                 const StringArray configFileName = inputs[2];
                 const TypedArray<int32_t> procIndex = inputs[3];
                 const TypedArray<int32_t> procSize = inputs[4];
-                interface = new SolverInterface(solverName[0],procIndex[0],procSize[0]);
+                interface = new SolverInterface(solverName[0],configFileName[0],procIndex[0],procSize[0]);
                 constructed = true;
-                interface->configure(configFileName[0]);
                 break;
             }
             case FunctionID::_destructor_:
@@ -178,6 +178,12 @@ public:
             {
                 bool result = interface->hasToEvaluateFineModel();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
+                break;
+            }
+            case FunctionID::getVersionInformation:
+            {
+                StringArray version = interface->getVersionInformation();
+                outputs[0] = factory.createArray({1,1}, {version});
                 break;
             }
             
