@@ -22,16 +22,16 @@ function solverdummy(configFileName,solverName,meshName)
     dt = interface.initialize();
     
     while(interface.isCouplingOngoing())
-        if(interface.isActionRequired('write-iteration-checkpoint'))
+        if(interface.isActionRequired(precice.Constants.actionWriteIterationCheckpoint()))
             disp('DUMMY: Writing iteration checkpoint.')
-            interface.markActionFulfilled('write-iteration-checkpoint');
+            interface.markActionFulfilled(precice.Constants.actionWriteIterationCheckpoint());
         end
         
         dt = interface.advance(dt);
         
-        if(interface.isActionRequired('read-iteration-checkpoint'))
+        if(interface.isActionRequired(precice.Constants.actionReadIterationCheckpoint()))
             disp('DUMMY: Reading iteration checkpoint.')
-            interface.markActionFulfilled('read-iteration-checkpoint');
+            interface.markActionFulfilled(precice.Constants.actionReadIterationCheckpoint());
         else
             disp('DUMMY: Advaning in time.')
         end
