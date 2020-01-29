@@ -39,7 +39,7 @@
         direction="read" from="MeshI" to="MeshU" constraint="consistent"/>
     </participant>
 
-    <m2n:sockets from="SolverI" to="SolverU" distribution-type="gather-scatter"/>
+    <m2n:sockets from="SolverI" to="SolverU"/>
     
     <coupling-scheme:serial-explicit>
       <participants first="SolverI" second="SolverU" /> 
