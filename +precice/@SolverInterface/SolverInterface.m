@@ -97,11 +97,6 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(26));
         end
 
-        % getVersionInformation
-        function s = getVersionInformation(obj)
-            s = preciceGateway(uint8(27));
-        end
-        
         %% Action Methods
         % isActionRequired
         function bool = isActionRequired(obj,action)

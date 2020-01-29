@@ -180,13 +180,7 @@ public:
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::getVersionInformation:
-            {
-                StringArray version = interface->getVersionInformation();
-                outputs[0] = factory.createArray({1,1}, {version});
-                break;
-            }
-            
+
             case FunctionID::isActionRequired:
             {
                 const StringArray action = inputs[1];

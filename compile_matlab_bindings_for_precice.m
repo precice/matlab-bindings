@@ -6,6 +6,7 @@
 path = string(fileparts(mfilename('fullpath')));
 path_Interface = strjoin([path,"+precice","@SolverInterface","private","preciceGateway"],filesep);
 path_Constants = strjoin([path,"+precice","@Constants","private","preciceGateway"],filesep);
+path_namespace_precice = strjoin([path, "+precice", "private", "preciceGateway"],filesep);
 
 % Get the flags for linking to preCICE
 [status,flags] = system('pkg-config --cflags --libs libprecice');
@@ -17,6 +18,7 @@ flags = strsplit(flags);
 % Run mex commands to compile
 mex(strcat(path_Interface,".cpp"),"-output",path_Interface,flags{:});
 mex(strcat(path_Constants,".cpp"),"-output",path_Constants,flags{:});
+mex(strcat(path_namespace_precice,".cpp"),"-output",path_namespace_precice,flags{:});
 
 %mex ~/precice/src/precice/bindings/matlab/+precice/@SolverInterface/private/preciceGateway.cpp -output ...
 %    ~/precice/src/precice/bindings/matlab/+precice/@SolverInterface/private/preciceGateway -lprecice;
