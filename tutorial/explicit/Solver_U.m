@@ -30,7 +30,7 @@ f_U = @(t, U, I) -I/C;      % Time derivative of U
 dt = interface.initialize();
 if (interface.isActionRequired(cowid))
     interface.writeScalarData(U_ID, vertex_ID, U0);
-    interface.fulfilledAction(cowid)
+    interface.markActionFulfilled(cowid)
 end
 interface.initializeData();
 

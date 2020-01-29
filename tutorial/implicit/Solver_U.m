@@ -32,7 +32,7 @@ f_U = @(t, U, I) -I/C;      % Time derivative of U
 dt = interface.initialize();
 if (interface.isActionRequired(cowid))
     interface.writeScalarData(U_ID, vertex_ID, U0);
-    interface.fulfilledAction(cowid)
+    interface.markActionFulfilled(cowid)
 end
 interface.initializeData();
 
@@ -44,7 +44,7 @@ while interface.isCouplingOngoing()
     if interface.isActionRequired(cowic)
         I0_checkpoint = I0;
         U0_checkpoint = U0;
-        interface.fulfilledAction(cowic)
+        interface.markActionFulfilled(cowic)
     end
 
     % Make Simulation Step
@@ -59,7 +59,7 @@ while interface.isCouplingOngoing()
     if interface.isActionRequired(coric)
         I0 = I0_checkpoint;
         U0 = U0_checkpoint;
-        interface.fulfilledAction(coric)
+        interface.markActionFulfilled(coric)
     else
         I0 = interface.readScalarData(I_ID, vertex_ID);
         t0 = t;

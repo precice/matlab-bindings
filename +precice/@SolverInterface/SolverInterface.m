@@ -111,8 +111,8 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(30),action);
         end
         
-        % fulfilledAction
-        function fulfilledAction(obj,action)
+        % markActionFulfilled
+        function markActionFulfilled(obj,action)
             if ischar(action)
                 action = string(action);
             end

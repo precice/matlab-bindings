@@ -33,7 +33,7 @@ t_vec = t0;                 % Vector of time
 dt = interface.initialize();
 if (interface.isActionRequired(cowid))
     interface.writeScalarData(I_ID, vertex_ID, I0);
-    interface.fulfilledAction(cowid)
+    interface.markActionFulfilled(cowid)
 end
 interface.initializeData();
 

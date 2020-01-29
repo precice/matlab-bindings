@@ -29,7 +29,7 @@ enum class FunctionID {
     getVersionInformation = 27,
     
     isActionRequired = 30,
-    fulfilledAction = 31,
+    markActionFulfilled = 31,
     
     hasMesh = 40,
     getMeshID = 41,
@@ -194,10 +194,10 @@ public:
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::fulfilledAction:
+            case FunctionID::markActionFulfilled:
             {
                 const StringArray action = inputs[1];
-                interface->fulfilledAction(action[0]);
+                interface->markActionFulfilled(action[0]);
                 break;
             }
             
