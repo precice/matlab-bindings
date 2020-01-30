@@ -23,7 +23,7 @@ enum class FunctionID {
     isCouplingOngoing = 21,
     isReadDataAvailable = 22,
     isWriteDataRequired = 23,
-    isTimestepComplete = 24,
+    isTimeWindowComplete = 24,
     hasToEvaluateSurrogateModel = 25,
     hasToEvaluateFineModel = 26,
     getVersionInformation = 27,
@@ -162,9 +162,9 @@ public:
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::isTimestepComplete:
+            case FunctionID::isTimeWindowComplete:
             {
-                bool result = interface->isTimestepComplete();
+                bool result = interface->isTimeWindowComplete();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }

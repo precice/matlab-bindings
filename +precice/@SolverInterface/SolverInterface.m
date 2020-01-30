@@ -82,8 +82,8 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(23),dt);
         end
         
-        % isTimestepComplete
-        function bool = isTimestepComplete(obj)
+        % isTimeWindowComplete
+        function bool = isTimeWindowComplete(obj)
             bool = preciceGateway(uint8(24));
         end
         
