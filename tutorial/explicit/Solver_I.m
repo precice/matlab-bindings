@@ -2,7 +2,7 @@ clear; close all; clc;
 
 % Initialize and configure preCICE
 interface = precice.SolverInterface("SolverI", "precice-config.xml", 0, 1);
-cowid = precice.Constants.actionWriteInitialData(); % Required for data initialization
+cowid = precice.constants.actionWriteInitialData(); % Required for data initialization
 
 % Geometry IDs. As it is a 0-D simulation, only one vertex is necessary.
 meshID = interface.getMeshID("MeshI");

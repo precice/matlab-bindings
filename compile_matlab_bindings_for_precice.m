@@ -5,7 +5,7 @@
 % from a different folder
 path = string(fileparts(mfilename('fullpath')));
 path_Interface = strjoin([path,"+precice","@SolverInterface","private","preciceGateway"],filesep);
-path_Constants = strjoin([path,"+precice","@Constants","private","preciceGateway"],filesep);
+path_Constants = strjoin([path,"+precice","+constants","private","preciceGateway"],filesep);
 path_namespace_precice = strjoin([path, "+precice", "private", "preciceGateway"],filesep);
 
 % Get the flags for linking to preCICE
