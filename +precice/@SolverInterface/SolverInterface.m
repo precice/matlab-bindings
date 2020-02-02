@@ -150,18 +150,20 @@ classdef SolverInterface < handle
         
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshID,positions)
+            assert(size(positions, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             inSize = size(positions, 2);
             vertexIds = preciceGateway(uint8(46),int32(meshID),int32(inSize),positions);
         end
         
         % getMeshVertices
         function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = size(vertexIds, 2);
+            inSize = length(vertexIds);
             positions = preciceGateway(uint8(47),int32(meshID),int32(inSize),vertexIds);
         end
         
         % getMeshVertexIDsFromPositions
         function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
+            assert(size(positions, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             inSize = size(positions, 2);
             vertexIds = preciceGateway(uint8(48),int32(meshID),int32(inSize),positions);
         end
@@ -224,7 +226,9 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            assert(inSize == size(values, 2), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            assert(size(values, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             preciceGateway(uint8(64),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -239,7 +243,8 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            assert(inSize == length(values));
             preciceGateway(uint8(66),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -254,7 +259,7 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = preciceGateway(uint8(68),int32(dataID),int32(inSize),valueIndices);
         end
         
@@ -272,7 +277,7 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = preciceGateway(uint8(70),int32(dataID),int32(inSize),valueIndices,transpose);
         end
         
