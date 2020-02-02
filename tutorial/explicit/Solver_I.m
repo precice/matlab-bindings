@@ -84,4 +84,5 @@ ylim([-1,1])
 title('Numerical')
 legend('I', 'U')
 
+save('outputs.mat', 'I', 'U')
 saveas(gcf, 'Curves.png')
