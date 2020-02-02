@@ -1,0 +1,71 @@
+# Dockerfile for building preCICE on ubuntu 18.04
+
+# Using the image with Ubuntu 18.04 and MATLAB as basis
+FROM matlab:latest
+
+# Installing necessary dependacies for preCICE, boost 1.65 from apt-get
+USER root
+RUN apt-get -qq update && apt-get -qq install \
+    build-essential \
+    libboost-all-dev \
+    libeigen3-dev \
+    libxml2-dev \
+    petsc-dev \
+    git \
+    python-numpy \
+    python-dev \
+    wget \
+    bzip2 \
+    mpich \
+    cmake && \
+    rm -rf /var/lib/apt/lists/*
+
+# Rebuild image if force_rebuild after that command
+ARG CACHEBUST
+
+# user precice
+USER precice
+WORKDIR /home/precice
+
+# Setting some environment variables for installing preCICE
+ENV CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH:/usr/include/eigen3" \
+    CPATH="/usr/include/eigen3:${CPATH}" \
+    PETSC_DIR="/usr/lib/petscdir/3.6.2/" \
+    PETSC_ARCH="x86_64-linux-gnu-real"
+
+# Building preCICE, ensuring that if the github repo changes, the cloning is done again 
+# (https://stackoverflow.com/questions/36996046/how-to-prevent-dockerfile-caching-git-clone)
+ARG branch=develop
+ADD https://api.github.com/repos/precice/precice/git/refs/heads/${branch} /precice_version.json
+RUN git clone --branch $branch https://github.com/precice/precice.git /home/precice/precice
+# Some parameters for the build, you can set them in the build command e.g.
+# sudo docker build Dockerfile.precice --build-arg petsc_para=yes --build-arg mpi_para=yes .
+# this will result in
+# cmake -DPETSC=yes -DMPI=yes -DPYTHON=no -DCMAKE_CXX_COMPILER=mpicxx -DMPIEXEC_EXECUTABLE=mpiexec -j2 /home/precice/precice
+ARG petsc_para=no
+ARG mpi_para=yes
+ARG python_para=no
+# Build preCICE, install into /usr/local and clean-up the build directory
+RUN mkdir /home/precice/precice-build && \
+    cd /home/precice/precice-build && \
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DBUILD_SHARED_LIBS=ON \
+          -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DPETSC=$petsc_para \
+          -DMPI=$mpi_para \
+          -DPYTHON=$python_para \
+          -DCMAKE_CXX_COMPILER=/usr/bin/mpicxx.mpich \
+          -DMPIEXEC_EXECUTABLE=/usr/bin/mpiexec.mpich \
+          /home/precice/precice && \
+    make -j$(nproc)
+# user with sudo rights is needed to install preCICE in system directory
+USER root
+RUN cd /home/precice/precice-build && \
+    make install && \
+    ldconfig
+USER precice
+RUN rm -rf /home/precice/precice-build
+
+# Setting preCICE environment variables
+ENV PRECICE_ROOT="/home/precice/precice" \
+    PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
