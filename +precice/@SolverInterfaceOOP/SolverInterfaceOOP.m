@@ -166,7 +166,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshID,positions)
-            assert(size(positions, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            assert(size(positions, 1) ==  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             inSize = size(positions,2);
             vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(46),int32(meshID),int32(inSize),positions);
         end
@@ -179,7 +179,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         
         % getMeshVertexIDsFromPositions
         function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
-            assert(size(positions, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            assert(size(positions, 1) ==  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             inSize = size(positions,2);
             vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(48),int32(meshID),int32(inSize),positions);
         end
@@ -244,7 +244,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             end
             inSize = length(valueIndices);
             assert(inSize == size(values, 2), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
-            assert(size(values, 1) ~=  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            assert(size(values, 1) ==  obj.getDimensions(), 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
             feval(obj.oMexHost,"preciceGateway",uint8(64),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -260,7 +260,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 valueIndices = int32(valueIndices);
             end
             inSize = length(valueIndices);
-            assert(inSize == length(values));
+            assert(inSize == length(values), 'valueIndices and values should must have the same length');
             feval(obj.oMexHost,"preciceGateway",uint8(66),int32(dataID),int32(inSize),valueIndices,values);
         end
         
