@@ -166,18 +166,20 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshID,positions)
+            obj.checkDimensions(size(positions, 1), obj.getDimensions())
             inSize = size(positions,2);
             vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(46),int32(meshID),int32(inSize),positions);
         end
         
         % getMeshVertices
         function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = size(vertexIds,2);
+            inSize = length(vertexIds);
             positions = feval(obj.oMexHost,"preciceGateway",uint8(47),int32(meshID),int32(inSize),vertexIds);
         end
         
         % getMeshVertexIDsFromPositions
         function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
+            obj.checkDimensions(size(positions, 1), obj.getDimensions())
             inSize = size(positions,2);
             vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(48),int32(meshID),int32(inSize),positions);
         end
@@ -240,7 +242,9 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(values, 2), inSize)
+            obj.checkDimensions(size(values, 1), obj.getDimensions())
             feval(obj.oMexHost,"preciceGateway",uint8(64),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -255,7 +259,8 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            assert(inSize == length(values), 'valueIndices and values should must have the same length');
             feval(obj.oMexHost,"preciceGateway",uint8(66),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -270,7 +275,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = feval(obj.oMexHost,"preciceGateway",uint8(68),int32(dataID),int32(inSize),valueIndices);
         end
         
@@ -288,13 +293,19 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = feval(obj.oMexHost,"preciceGateway",uint8(70),int32(dataID),int32(inSize),valueIndices,transpose);
         end
         
         % readScalarData
         function value = readScalarData(obj,dataID,valueIndex)
             value = feval(obj.oMexHost,"preciceGateway",uint8(71),int32(dataID),int32(valueIndex));
+        end
+
+        %% Helper functions
+        % Check for dxn convention
+        function checkDimensions(obj, a, b)
+            assert(a ==  b, 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
         end
     end
 end
