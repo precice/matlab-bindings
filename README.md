@@ -2,6 +2,8 @@
 
 These bindings allow to use preCICE with MATLAB based on the C++ MEX and C data API. They are still in an experimental state, so please utilize them with care. Any feedback is welcome.
 
+Note that the first three digits of the version number of the bindings indicate the preCICE version that the bindings support. The last digit represents the version of the bindings. Example: `v2.0.0.1` of the bindings represents version `1` of the bindings which is compatible with preCICE `v2.0.0`.
+
 ## Requirements
 
 MATLAB R2018a or later is required. The bindings were tested on R2018b, R2019a and R2019b.
