@@ -59,6 +59,26 @@ This has the following advantages:
 - If the gateway function crashes, then MATLAB will not crash. Only the mexHost object will crash.
 However, using the OOP variant is **significantly** slower than the normal in process
 
+# Troubleshooting
+
+## `libprecice.so` cannot be found
+
+```
+Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
+libprecice.so.2: cannot open shared object file: No such file or directory.
+```
+
+Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://github.com/precice/precice/wiki/Building:-Using-CMake#checking-your-installation). 
+
+You can also run `pkg-config --cflags --libs libprecice` to see whether the paths provided by `pkg-config` point to the correct place. Example output, if everything is correct and you installed preCICE via `sudo make install`:
+
+```
+$ pkg-config --cflags --libs libprecice
+-I/usr/local/include -L/usr/local/lib -lprecice
+```
+
+If everything until this point looks good and you are still facing problems and you installed preCICE to a custom location using `CMAKE_INSTALL_PREFIX`, MATLAB might not be able to find `libprecice.so`, since it is not discoverable. Please add the location of `libprecice.so` (see `pkg-config --libs-only-L libprecice`, without the `-L`) to your `LD_LIBRARY_PATH`. For further instructions refer to the [MATLAB documentation](https://de.mathworks.com/help/matlab/matlab_external/set-run-time-library-path-on-linux-systems.html).
+
 # Contributors
 
 * [Dominik Volland](https://github.com/Dominanz) contributed first working prototype in [PR #494 on `precice/precice`](https://github.com/precice/precice/pull/494)
