@@ -51,7 +51,7 @@ Run solver for current in first shell:
 cd explicit
 
 # Add bindings to MATLAB path
-export MATLABPATH=$PRECICE_ROOT/src/precice/bindings/matlab/
+export MATLABPATH=<PATH OF MATLAB BINDINGS>
 
 # Run matlab code without GUI
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -nodisplay -nosplash -nodesktop -r "Solver_I;exit;"
@@ -64,7 +64,7 @@ Run solver for voltage in second shell:
 cd explicit
 
 # Add bindings to MATLAB path
-export MATLABPATH=$PRECICE_ROOT/src/precice/bindings/matlab/
+export MATLABPATH=<PATH OF MATLAB BINDINGS>
 
 # Run matlab code without GUI
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -nodisplay -nosplash -nodesktop -r "Solver_U;exit;"
