@@ -1,23 +1,52 @@
 % MATLAB solverdummy.
 % To use it, don't forget to install the matlab bindings and add them to
 % the path
-function solverdummy(configFileName,solverName,meshName)
+function solverdummy(configFileName,participantName,meshName)
     if nargin~=3
         disp('Usage: solverdummy configFile solverName meshName');
         disp('');
         disp('Parameter description');
         disp('  configurationFile: Path and filename of preCICE configuration');
-        disp('  solverName:        SolverDummy participant name in preCICE configuration');
+        disp('  participantName:        SolverDummy participant name in preCICE configuration');
         disp('  meshName:          Mesh in preCICE configuration that carries read and write data');
         return;
     end
     
-    interface = precice.SolverInterface(solverName, configFileName, 0, 1);
+    if (strcmp(participantName, 'SolverOne'))
+        writeDataName = 'dataOne';
+        readDataName = 'dataTwo';
+    end
+    
+    if (strcmp(participantName, 'SolverTwo'))
+        readDataName = 'dataOne';
+        writeDataName = 'dataTwo';
+    end
+    
+    numVertices = 3;
+    
+    solverProcessIndex = 0;
+    solverProcessSize = 1;
+    
+    interface = precice.SolverInterface(participantName, configFileName, solverProcessIndex, solverProcessSize);
     
     meshID = interface.getMeshID(meshName);
     dims = interface.getDimensions();
     
-    dataIndices = interface.setMeshVertex(meshID,zeros(dims,1));
+    vertices(dims, numVertices) = 0;
+    readData(dims, numVertices) = 0;
+    writeData(dims, numVertices) = 0;
+    
+    for x = 1 : numVertices
+        for y = 1 : dims
+            vertices(y, x) = x;
+            readData(y, x) = x;
+            writeData(y, x) = x;
+        end
+    end
+    
+    vertexIDs = interface.setMeshVertices(meshID, vertices);
+    readDataID = interface.getDataID(readDataName, meshID);
+    writeDataID = interface.getDataID(writeDataName, meshID);
     
     dt = interface.initialize();
     
@@ -25,6 +54,16 @@ function solverdummy(configFileName,solverName,meshName)
         if(interface.isActionRequired(precice.constants.actionWriteIterationCheckpoint()))
             disp('DUMMY: Writing iteration checkpoint.')
             interface.markActionFulfilled(precice.constants.actionWriteIterationCheckpoint());
+        end
+        
+        if (interface.isReadDataAvailable())
+            readData = interface.readBlockVectorData(readDataID, vertexIDs);
+        end
+        
+        writeData = readData + 1;
+        
+        if (interface.isWriteDataRequires())
+            interface.writeBlockVectorData(writeDataID, vertexIDs, writeData);
         end
         
         dt = interface.advance(dt);
