@@ -33,7 +33,7 @@ function solverdummy(configFileName,solverName,meshName)
             disp('DUMMY: Reading iteration checkpoint.')
             interface.markActionFulfilled(precice.constants.actionReadIterationCheckpoint());
         else
-            disp('DUMMY: Advaning in time.')
+            disp('DUMMY: Advancing in time.')
         end
     end
     
