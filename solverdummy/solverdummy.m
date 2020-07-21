@@ -62,7 +62,7 @@ function solverdummy(configFileName,participantName,meshName)
         
         writeData = readData + 1;
         
-        if (interface.isWriteDataRequires())
+        if (interface.isWriteDataRequired(dt))
             interface.writeBlockVectorData(writeDataID, vertexIDs, writeData);
         end
         
