@@ -45,6 +45,7 @@ enum class FunctionID {
     setMeshTriangleWithEdges = 51,
     setMeshQuad = 52,
     setMeshQuadWithEdges = 53,
+    setMeshAccessRegion = 55,
     
     hasData = 60,
     getDataID = 61,
@@ -314,6 +315,14 @@ public:
                 break;
             }
             
+            case FunctionID::setMeshAccessRegion:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                const TypedArray<double> boundingBox = inputs[2];
+                interface->setMeshAccessRegion(meshID[0],&*boundingBox.begin());
+                break;
+            }
+
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];

@@ -193,6 +193,11 @@ classdef SolverInterface < handle
             preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
         
+        % setMeshAccessRegion
+        function setMeshAccessRegion(meshID, boundingBox)
+            preciceGateway(uint8(55),int32(meshID),boundingBox)
+        end
+
         %% Data Access
         % hasDataID
         function bool = hasData(obj,dataName,meshID)
