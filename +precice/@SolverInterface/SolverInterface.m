@@ -193,6 +193,11 @@ classdef SolverInterface < handle
             preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
         
+        % isMeshConnectivityRequired
+        function bool = isMeshConnectivityRequired(meshID)
+            bool = preciceGateway(uint8(54),int32(meshID))
+        end
+        
         %% Data Access
         % hasDataID
         function bool = hasData(obj,dataName,meshID)
