@@ -46,6 +46,7 @@ enum class FunctionID {
     setMeshQuad = 52,
     setMeshQuadWithEdges = 53,
     setMeshAccessRegion = 55,
+    getMeshVerticesAndIDs = 56,
     
     hasData = 60,
     getDataID = 61,
@@ -314,7 +315,6 @@ public:
                 interface->setMeshQuadWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0],fourthVertexID[0]);
                 break;
             }
-            
             case FunctionID::setMeshAccessRegion:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -322,7 +322,17 @@ public:
                 interface->setMeshAccessRegion(meshID[0],&*boundingBox.begin());
                 break;
             }
-
+            case FunctionID::getMeshVerticesAndIDs:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                const TypedArray<int32_t> size = inputs[2];
+                const TypedArray<int32_t> ids = inputs[3];
+                const TypedArray<double> positions = inputs[4];
+                interface->getMeshVertices(meshID[0],size[0],&*ids.begin(),positions);
+                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions));
+                outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
+                break;
+            } 
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];

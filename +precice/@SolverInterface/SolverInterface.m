@@ -198,6 +198,12 @@ classdef SolverInterface < handle
             preciceGateway(uint8(55),int32(meshID),boundingBox)
         end
 
+        % getMeshVerticesAndIDs
+        function [vertices, outIDs] = getMeshVerticesAndIDs(meshID, ids, coordinates)
+            inSize = length(ids);
+            (vertices,outIDs) = preciceGateway(uint8(56),int32(meshID),int32(inSize),ids, coordinates);
+        end
+
         %% Data Access
         % hasDataID
         function bool = hasData(obj,dataName,meshID)
