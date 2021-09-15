@@ -199,9 +199,9 @@ classdef SolverInterface < handle
         end
 
         % getMeshVerticesAndIDs
-        function [vertices, outIDs] = getMeshVerticesAndIDs(meshID, ids, coordinates)
-            inSize = length(ids);
-            (vertices,outIDs) = preciceGateway(uint8(56),int32(meshID),int32(inSize),ids, coordinates);
+        function [vertices, outIDs] = getMeshVerticesAndIDs(meshID)
+            inSize = getMeshVertexSize(meshID);
+            [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
         end
 
         %% Data Access

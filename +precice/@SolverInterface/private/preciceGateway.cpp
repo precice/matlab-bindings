@@ -326,10 +326,12 @@ public:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
                 const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> ids = inputs[3];
-                const TypedArray<double> positions = inputs[4];
-                interface->getMeshVertices(meshID[0],size[0],&*ids.begin(),&*positions.begin());
-                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions));
+                buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
+                int32_t* ids = ids_ptr.get();
+                buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
+                double* positions = positions_ptr.get();
+                interface->getMeshVertices(meshID[0],size[0],ids,positions);
+                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
                 outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
                 break;
             } 
