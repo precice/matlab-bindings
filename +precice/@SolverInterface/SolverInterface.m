@@ -193,12 +193,12 @@ classdef SolverInterface < handle
             preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
         
-        % setMeshAccessRegion
+        % setMeshAccessRegion - EXPERIMENTAL
         function setMeshAccessRegion(meshID, boundingBox)
             preciceGateway(uint8(55),int32(meshID),boundingBox)
         end
 
-        % getMeshVerticesAndIDs
+        % getMeshVerticesAndIDs  - EXPERIMENTAL
         function [vertices, outIDs] = getMeshVerticesAndIDs(meshID)
             inSize = getMeshVertexSize(meshID);
             [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
