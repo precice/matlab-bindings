@@ -45,6 +45,7 @@ enum class FunctionID {
     setMeshTriangleWithEdges = 51,
     setMeshQuad = 52,
     setMeshQuadWithEdges = 53,
+    isMeshConnectivityRequired = 54,
     
     hasData = 60,
     getDataID = 61,
@@ -311,6 +312,14 @@ public:
                 const TypedArray<int32_t> thirdVertexID = inputs[3];
                 const TypedArray<int32_t> fourthVertexID = inputs[3];
                 interface->setMeshQuadWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0],fourthVertexID[0]);
+                break;
+            }
+            
+            case FunctionID::isMeshConnectivityRequired:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                bool output = interface->isMeshConnectivityRequired(meshID[0]);
+                outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             
