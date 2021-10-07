@@ -220,6 +220,11 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
         end
         
+        % isMeshConnectivityRequired
+        function bool = isMeshConnectivityRequired(meshID)
+            bool = preciceGateway(uint8(54),int32(meshID))
+        end
+                
         %% Data Access
         % hasDataID
         function bool = hasData(obj,dataName,meshID)
