@@ -316,7 +316,6 @@ public:
                 interface->setMeshQuadWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0],fourthVertexID[0]);
                 break;
             }
-<<<<<<< HEAD
             case FunctionID::setMeshAccessRegion:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -337,7 +336,6 @@ public:
                 outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
                 break;
             } 
-=======
             
             case FunctionID::isMeshConnectivityRequired:
             {
@@ -347,7 +345,6 @@ public:
                 break;
             }
             
->>>>>>> develop
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];
