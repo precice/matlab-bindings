@@ -45,9 +45,9 @@ enum class FunctionID {
     setMeshTriangleWithEdges = 51,
     setMeshQuad = 52,
     setMeshQuadWithEdges = 53,
+    isMeshConnectivityRequired = 54,
     setMeshAccessRegion = 55,
     getMeshVerticesAndIDs = 56,
-    isMeshConnectivityRequired = 54,
     
     hasData = 60,
     getDataID = 61,
