@@ -336,7 +336,6 @@ public:
                 outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
                 break;
             } 
-            
             case FunctionID::isMeshConnectivityRequired:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -344,7 +343,6 @@ public:
                 outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
-            
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];
