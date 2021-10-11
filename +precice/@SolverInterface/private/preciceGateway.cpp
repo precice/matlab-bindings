@@ -45,6 +45,9 @@ enum class FunctionID {
     setMeshTriangleWithEdges = 51,
     setMeshQuad = 52,
     setMeshQuadWithEdges = 53,
+    isMeshConnectivityRequired = 54,
+    setMeshAccessRegion = 55,
+    getMeshVerticesAndIDs = 56,
     
     hasData = 60,
     getDataID = 61,
@@ -313,7 +316,33 @@ public:
                 interface->setMeshQuadWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0],fourthVertexID[0]);
                 break;
             }
-            
+            case FunctionID::setMeshAccessRegion:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                const TypedArray<double> boundingBox = inputs[2];
+                interface->setMeshAccessRegion(meshID[0],&*boundingBox.begin());
+                break;
+            }
+            case FunctionID::getMeshVerticesAndIDs:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                const TypedArray<int32_t> size = inputs[2];
+                buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
+                int32_t* ids = ids_ptr.get();
+                buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
+                double* positions = positions_ptr.get();
+                interface->getMeshVertices(meshID[0],size[0],ids,positions);
+                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
+                outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
+                break;
+            } 
+            case FunctionID::isMeshConnectivityRequired:
+            {
+                const TypedArray<int32_t> meshID = inputs[1];
+                bool output = interface->isMeshConnectivityRequired(meshID[0]);
+                outputs[0] = factory.createScalar<bool>(output);
+                break;
+            }
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];

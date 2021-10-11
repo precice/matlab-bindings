@@ -10,7 +10,7 @@ MATLAB R2018a or later is required. The bindings were tested on R2018b, R2019a, 
 
 ## Restrictions
 
-- An issue causes MATLAB to crash upon SolverInterface initialization if precice was compiled with openmpi. This issue can be resolved by installing openmpi from source using the option `-disable-dlopen`. For reference, see e.g. [here](https://stackoverflow.com/questions/26901663/error-when-running-openmpi-based-library). Alternatively, the user can switch to a different MPI implementation, e.g. MPICH (other implementations were not tested). Note that for [using a different MPI implementation](https://github.com/precice/precice/wiki/Building:-Using-CMake#build-precice-using-non-default-mpi-implementation) one has to specify the alternative implementation while building preCICE. For more information on this issue, please refer to https://github.com/precice/matlab-bindings/issues/19.
+- An issue causes MATLAB to crash upon SolverInterface initialization if precice was compiled with openmpi. This issue can be resolved by installing openmpi from source using the option `-disable-dlopen`. For reference, see e.g. [here](https://stackoverflow.com/questions/26901663/error-when-running-openmpi-based-library). Alternatively, the user can switch to a different MPI implementation, e.g. MPICH (other implementations were not tested). Note that for [using a different MPI implementation](https://precice.org/installation-source-advanced.html#mpi---build-precice-using-non-default-mpi-implementation) one has to specify the alternative implementation while building preCICE. For more information on this issue, please refer to https://github.com/precice/matlab-bindings/issues/19.
 - Currently, only one instance of the `SolverInterface` class can exist at the same time in a single MATLAB instance. If the user wishes to couple multiple participants based on MATLAB, he is supposed to start them in different MATLAB instances. If, for some reason, the user needs multiple instances of `SolverInterface`, he should use the OOP variant (Multiple instances of `SolverInterfaceOOP` can exist at the same time).
 - There is a known bug, if the `SolverInterface` destructor is called. For a possible workaround refer to https://github.com/precice/precice/issues/378. This issue is tracked in https://github.com/precice/matlab-bindings/issues/28.
 
@@ -23,7 +23,7 @@ In some cases, MATLAB's own `libstdc++` library may be an old version, which lea
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
 ```
 
-The script uses `pkg-config` to determine the necessary flags. If `pkg-config` is unable to find the flags, the script will throw an error. Please refer to the [Linking to preCICE](https://github.com/precice/precice/wiki/Linking-to-preCICE) page in the preCICE wiki for details regarding `pkg-config`.
+The script uses `pkg-config` to determine the necessary flags. If `pkg-config` is unable to find the flags, the script will throw an error. Please refer to the [Linking to preCICE](https://precice.org/installation-linking.html) page in the preCICE wiki for details regarding `pkg-config`.
 
 If using the script fails for some reason, please let us know.
 
@@ -68,7 +68,7 @@ Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/pre
 libprecice.so.2: cannot open shared object file: No such file or directory.
 ```
 
-Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://github.com/precice/precice/wiki/Building:-Using-CMake#checking-your-installation). 
+Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://precice.org/installation-source-installation.html#testing-your-installation). 
 
 You can also run `pkg-config --cflags --libs libprecice` to see whether the paths provided by `pkg-config` point to the correct place. Example output, if everything is correct and you installed preCICE via `sudo make install`:
 
@@ -83,5 +83,5 @@ If everything until this point looks good and you are still facing problems and 
 
 * [Dominik Volland](https://github.com/Dominanz) contributed first working prototype in [PR #494 on `precice/precice`](https://github.com/precice/precice/pull/494)
 * [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
-* [Benjamin Rüth](https://github.com/BenjaminRueth)
+* [Benjamin Rodenberg](https://github.com/BenjaminRodenberg)
 * [Frédéric Simonis](https://github.com/fsimonis)
