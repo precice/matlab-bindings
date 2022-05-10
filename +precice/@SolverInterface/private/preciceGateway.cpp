@@ -333,7 +333,7 @@ public:
                 double* positions = positions_ptr.get();
                 interface->getMeshVertices(meshID[0],size[0],ids,positions);
                 outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
-                outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids));
+                outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
                 break;
             } 
             case FunctionID::isMeshConnectivityRequired:
