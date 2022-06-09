@@ -1,25 +1,26 @@
 % MATLAB solverdummy.
 % To use it, don't forget to install the matlab bindings and add them to
 % the path
-function solverdummy(configFileName,participantName,meshName)
-    if nargin~=3
-        disp('Usage: solverdummy configFile solverName meshName');
+function solverdummy(configFileName,participantName)
+    if nargin~=2
+        disp('Usage: solverdummy configFile solverName');
         disp('');
         disp('Parameter description');
         disp('  configurationFile: Path and filename of preCICE configuration');
         disp('  participantName:        SolverDummy participant name in preCICE configuration');
-        disp('  meshName:          Mesh in preCICE configuration that carries read and write data');
         return;
     end
     
     if (strcmp(participantName, 'SolverOne'))
         writeDataName = 'dataOne';
         readDataName = 'dataTwo';
+        meshName = 'MeshOne';
     end
     
     if (strcmp(participantName, 'SolverTwo'))
         readDataName = 'dataOne';
         writeDataName = 'dataTwo';
+        meshName = 'MeshTwo';
     end
     
     numVertices = 3;
