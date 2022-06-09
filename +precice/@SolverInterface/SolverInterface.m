@@ -150,18 +150,20 @@ classdef SolverInterface < handle
         
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshID,positions)
+            obj.checkDimensions(size(positions, 1), obj.getDimensions())
             inSize = size(positions, 2);
             vertexIds = preciceGateway(uint8(46),int32(meshID),int32(inSize),positions);
         end
         
         % getMeshVertices
         function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = size(vertexIds, 2);
+            inSize = length(vertexIds);
             positions = preciceGateway(uint8(47),int32(meshID),int32(inSize),vertexIds);
         end
         
         % getMeshVertexIDsFromPositions
         function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
+            obj.checkDimensions(size(positions, 1), obj.getDimensions())
             inSize = size(positions, 2);
             vertexIds = preciceGateway(uint8(48),int32(meshID),int32(inSize),positions);
         end
@@ -189,6 +191,22 @@ classdef SolverInterface < handle
         % setMeshQuadWithEdges
         function setMeshQuadWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
             preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+        end
+        
+        % setMeshAccessRegion - EXPERIMENTAL
+        function setMeshAccessRegion(meshID, boundingBox)
+            preciceGateway(uint8(55),int32(meshID),boundingBox)
+        end
+
+        % getMeshVerticesAndIDs - EXPERIMENTAL
+        function [vertices, outIDs] = getMeshVerticesAndIDs(meshID)
+            inSize = getMeshVertexSize(meshID);
+            [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
+        end
+
+        % isMeshConnectivityRequired
+        function bool = isMeshConnectivityRequired(meshID)
+            bool = preciceGateway(uint8(54),int32(meshID))
         end
         
         %% Data Access
@@ -224,7 +242,9 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(values, 2), inSize)
+            obj.checkDimensions(size(values, 1), obj.getDimensions())
             preciceGateway(uint8(64),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -239,7 +259,8 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
+            assert(inSize == length(values), 'valueIndices and values should must have the same length');
             preciceGateway(uint8(66),int32(dataID),int32(inSize),valueIndices,values);
         end
         
@@ -254,7 +275,7 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = preciceGateway(uint8(68),int32(dataID),int32(inSize),valueIndices);
         end
         
@@ -272,13 +293,19 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = size(valueIndices, 2);
+            inSize = length(valueIndices);
             values = preciceGateway(uint8(70),int32(dataID),int32(inSize),valueIndices,transpose);
         end
         
         % readScalarData
         function value = readScalarData(obj,dataID,valueIndex)
             value = preciceGateway(uint8(71),int32(dataID),int32(valueIndex));
+        end
+
+        %% Helper functions
+        % Check for dxn convention
+        function checkDimensions(obj, a, b)
+            assert(a ==  b, 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
         end
     end
 end
