@@ -1,0 +1,27 @@
+name: Build matlab bindings
+on: [push,pull_request]
+jobs:
+  build:
+    name: Build Matlab bindings
+    runs-on: ubuntu-latest
+    container: precice/precice
+    strategy:
+      matrix:
+        include:
+        - release: [latest, R2020b, R2019a, R2018a]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v1
+        with: 
+          release: ${{ matrix.release }}
+      # - name: Change Matlab compiler
+      #   run: export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
+      - name: Run compilation script
+        uses: matlab-actions/run-command@v1
+        with:
+          command: compile_matlab_bindings_for_precice.m
+  
+  # run_example:
+  #   name: Run matlab examples
