@@ -10,8 +10,6 @@ jobs:
         include:
         - release: latest
         - release: R2020b
-        - release: R2019a
-        - release: R2018a
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
