@@ -5,11 +5,11 @@ jobs:
     name: Build Matlab bindings
     runs-on: ubuntu-latest
     container: precice/precice
-    strategy:
-      matrix:
-        include:
-        - release: latest
-        - release: R2020b
+    # strategy:
+    #   matrix:
+    #     include:
+    #     - release: latest
+    #     - release: R2020b
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
@@ -20,8 +20,8 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
-        with: 
-          release: ${{ matrix.release }}
+        # with: 
+        #   release: ${{ matrix.release }}
       # - name: Change Matlab compiler
       #   run: export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
       - name: Run compilation script
