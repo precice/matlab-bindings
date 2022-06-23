@@ -8,7 +8,10 @@ jobs:
     strategy:
       matrix:
         include:
-        - release: [latest, R2020b, R2019a, R2018a]
+        - release: latest
+        - release: R2020b
+        - release: R2019a
+        - release: R2018a
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
