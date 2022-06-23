@@ -4,7 +4,7 @@ jobs:
   build:
     name: Build Matlab bindings
     runs-on: ubuntu-latest
-    # container: precice/precice
+    container: precice/precice
     strategy:
       matrix:
         include:
