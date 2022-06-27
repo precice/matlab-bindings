@@ -4,26 +4,28 @@ jobs:
   build:
     name: Build Matlab bindings
     runs-on: ubuntu-latest
-    container: precice/precice
-    # strategy:
-    #   matrix:
-    #     include:
-    #     - release: latest
-    #     - release: R2020b
+    strategy:
+      matrix:
+        include:
+        - release: latest
+        - release: R2020b
     steps:
+      - name: Install precice
+        run: |
+          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_bullseye.deb 
+          sudo apt install ./libprecice2_2.4.0_bullseye.deb
+
       - name: Check out repository
         uses: actions/checkout@v2
-      - name: install sudo
-        run: |
-            apt-get update && \
-            apt-get -y install sudo
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
-        # with: 
-        #   release: ${{ matrix.release }}
+        with: 
+          release: ${{ matrix.release }}
+
       # - name: Change Matlab compiler
       #   run: export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
+      
       - name: Run compilation script
         uses: matlab-actions/run-command@v1
         with:
