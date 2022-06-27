@@ -25,11 +25,11 @@ jobs:
 
       # - name: Change Matlab compiler
       #   run: export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
-      
+
       - name: Run compilation script
         uses: matlab-actions/run-command@v1
         with:
-          command: compile_matlab_bindings_for_precice.m
+          command: compile_matlab_bindings_for_precice
   
   # run_example:
   #   name: Run matlab examples
