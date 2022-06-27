@@ -2,7 +2,7 @@ name: Build matlab bindings
 on: [push,pull_request]
 jobs:
   build:
-    name: Build Matlab bindings
+    name: Build and Test Solverdummies
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,21 +15,30 @@ jobs:
           wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_bullseye.deb 
           sudo apt install ./libprecice2_2.4.0_bullseye.deb
 
-      - name: Check out repository
-        uses: actions/checkout@v2
+      - name: upload file artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: precice-package
+          path: libprecice2_2.4.0_bullseye.deb
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
         with: 
           release: ${{ matrix.release }}
 
-      # - name: Change Matlab compiler
-      #   run: export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6"
+      - name: Check out repository
+        uses: actions/checkout@v2
 
       - name: Run compilation script
         uses: matlab-actions/run-command@v1
         with:
           command: compile_matlab_bindings_for_precice
   
-  # run_example:
-  #   name: Run matlab examples
+      - name: change to solverdummy directory
+        run: cd solverdummy
+
+      - name: Run Solverdummies
+        run: |
+          matlab solverdummy precice-config.xml SolverOne
+          matlab solverdummy precice-config.xml SolverTwo
+
