@@ -39,6 +39,5 @@ jobs:
 
       - name: Run Solverdummies
         run: |
-          matlab solverdummy precice-config.xml SolverOne
-          matlab solverdummy precice-config.xml SolverTwo
+          matlab -nodesktop solverdummy precice-config.xml SolverOne & matlab -nodesktop solverdummy precice-config.xml SolverTwo
 
