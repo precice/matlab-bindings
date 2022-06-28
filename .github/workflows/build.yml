@@ -39,5 +39,5 @@ jobs:
 
       - name: Run Solverdummies
         run: |
-          matlab -batch solverdummy precice-config.xml SolverOne & matlab -batch solverdummy precice-config.xml SolverTwo
+          matlab -batch "solverdummy precice-config.xml SolverOne;" & matlab -batch "solverdummy precice-config.xml SolverTwo;"
 
