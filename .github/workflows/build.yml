@@ -36,5 +36,5 @@ jobs:
   
       - name: Run Solverdummies
         run: |
-          matlab -sd "./solverdummy" -batch "solverdummy precice-config.xml SolverOne;" & matlab -batch "solverdummy precice-config.xml SolverTwo;"
+          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
 
