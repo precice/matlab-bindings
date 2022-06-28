@@ -34,10 +34,7 @@ jobs:
         with:
           command: compile_matlab_bindings_for_precice
   
-      - name: change to solverdummy directory
-        run: cd solverdummy
-
       - name: Run Solverdummies
         run: |
-          matlab -batch "solverdummy precice-config.xml SolverOne;" & matlab -batch "solverdummy precice-config.xml SolverTwo;"
+          matlab -sd "./solverdummy" -batch "solverdummy precice-config.xml SolverOne;" & matlab -batch "solverdummy precice-config.xml SolverTwo;"
 
