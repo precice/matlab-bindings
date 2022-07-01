@@ -46,7 +46,16 @@ jobs:
         with:
           command: compile_matlab_bindings_for_precice
   
-      - name: Run Solverdummies
-        run: |
-          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+      # - name: Run Solverdummies
+      #   run: |
+      #     matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
 
+      - name: Change to solverdummy directory
+        run: |
+          cd solverdummy
+
+      - name: Run compilation script
+        uses: matlab-actions/run-command@v1
+        with:
+          command: solverdummy
+  
