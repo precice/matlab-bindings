@@ -27,7 +27,7 @@ jobs:
 
       - name: Fix `version 'GLIBCXX_3.4.26' not found`
         run: |
-          echo 'LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6' >> ~/.bashrc
+          echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6' >> ~/.bashrc
           source ~/.bashrc
 
       - name: Set up MATLAB
