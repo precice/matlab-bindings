@@ -12,14 +12,14 @@ jobs:
     steps:
       - name: Install precice
         run: |
-          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_bullseye.deb 
+          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_focal.deb 
           sudo apt install ./libprecice2_2.4.0_bullseye.deb
 
-      - name: upload file artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: precice-package
-          path: libprecice2_2.4.0_bullseye.deb
+      # - name: upload file artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: precice-package
+      #     path: libprecice2_2.4.0_bullseye.deb
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
