@@ -27,7 +27,9 @@ jobs:
 
       - name: Fix `version 'GLIBCXX_3.4.26' not found`
         run: |
-          sudo apt-get install gcc-8 libstdc++6
+          sudo apt update
+          sudo apt-get install gcc-8 
+          sudo apt-get upgrade libstdc++6
           echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6' >> ~/.bashrc
           source ~/.bashrc
 
