@@ -14,11 +14,6 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
-      - name: Change matlab gcc version # for compatibility with versions <= R2020b
-        run: | 
-          echo 'export gcc=/usr/bin/gcc-8' >> ~/.bashrc
-          source ~/.bashrc
-
       - name: Install precice
         run: |
           wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_focal.deb 
