@@ -5,10 +5,14 @@ jobs:
     name: Build and Test Solverdummies
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
         - release: latest
+        - release: R2021b
+        - release: R2021a
         - release: R2020b
+        - release: R2020a
     steps:
       - name: Change matlab gcc version # for compatibility with versions <= R2020b
         run: | 
