@@ -27,6 +27,7 @@ jobs:
 
       - name: Fix `version 'GLIBCXX_3.4.26' not found`
         run: |
+          strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28 | grep GLIBCXX
           sudo apt update
           sudo apt-get install gcc-8 
           sudo apt-get upgrade libstdc++6
@@ -46,16 +47,7 @@ jobs:
         with:
           command: compile_matlab_bindings_for_precice
   
-      # - name: Run Solverdummies
-      #   run: |
-      #     matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
-
-      - name: Change to solverdummy directory
+      - name: Run Solverdummies
         run: |
-          cd solverdummy
+          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
 
-      - name: Run compilation script
-        uses: matlab-actions/run-command@v1
-        with:
-          command: solverdummy
-  
