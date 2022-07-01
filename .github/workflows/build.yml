@@ -8,11 +8,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - release: latest
+        # - release: latest
         - release: R2021b
         - release: R2021a
         - release: R2020b
-        - release: R2020a
+        # - release: R2020a
     steps:
       - name: Install precice
         run: |
@@ -27,7 +27,7 @@ jobs:
 
       - name: Fix `version 'GLIBCXX_3.4.26' not found`
         run: |
-          sudo apt-get install --only-upgrade libstdc++6
+          sudo apt-get install gcc-8 libstdc++6
           echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6' >> ~/.bashrc
           source ~/.bashrc
 
