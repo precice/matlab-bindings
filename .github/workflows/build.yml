@@ -11,7 +11,9 @@ jobs:
         - release: R2020b
     steps:
       - name: Change matlab gcc version # for compatibility with versions <= R2020b
-        run: export CXX=/usr/bin/gcc-8
+        run: |
+          export gcc=/usr/bin/gcc-8
+          export g++=/usr/bin/gcc-8
 
       - name: Install precice
         run: |
