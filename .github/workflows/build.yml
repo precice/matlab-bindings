@@ -28,11 +28,8 @@ jobs:
       - name: Fix `version 'GLIBCXX_3.4.26' not found` # from https://github.com/coder/code-server/issues/766#issuecomment-525709055
         run: |
           sudo find / -name "libstdc++.so.6*"  
-          wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
-          sh Anaconda3-2019.07-Linux-x86_64.sh -b
-          cp anaconda3/lib/libstdc++.so.6.0.26 /usr/lib64
-          rm /usr/lib64/libstdc++.so.6
-          ln -s /usr/lib64/libstdc++.so.6.0.26 /usr/lib64/libstdc++.so.6
+          cp /usr/lib32/libstdc++.so.6* /usr/lib64/
+          cp /usr/lib32/libstdc++.so.6.0.28 /usr/lib64/libstdc++.so.6.0.28
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
