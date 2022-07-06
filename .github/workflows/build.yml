@@ -27,12 +27,11 @@ jobs:
 
       - name: Fix `version 'GLIBCXX_3.4.26' not found`
         run: |
-          strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.28 | grep GLIBCXX
           sudo apt update
-          sudo apt-get install gcc-8 
-          sudo apt-get upgrade libstdc++6
-          echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6' >> ~/.bashrc
-          source ~/.bashrc
+          sudo apt install wget gcc-8 unzip libssl1.0.0 software-properties-common
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt update
+          sudo apt-get install --only-upgrade libstdc++6
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
