@@ -25,13 +25,14 @@ jobs:
       #     name: precice-package
       #     path: libprecice2_2.4.0_bullseye.deb
 
-      - name: Fix `version 'GLIBCXX_3.4.26' not found`
+      - name: Fix `version 'GLIBCXX_3.4.26' not found` # from https://github.com/coder/code-server/issues/766#issuecomment-525709055
         run: |
-          sudo apt update
-          sudo apt install wget gcc-8 unzip libssl1.0.0 software-properties-common
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt update
-          sudo apt-get install --only-upgrade libstdc++6
+          strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep GLIBC  
+          wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+          sh Anaconda3-2019.07-Linux-x86_64.sh
+          cp anaconda3/lib/libstdc++.so.6.0.26 /usr/lib64
+          rm /usr/lib64/libstdc++.so.6
+          ln -s /usr/lib64/libstdc++.so.6.0.26 /usr/lib64/libstdc++.so.6
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
