@@ -3,7 +3,7 @@ on: [push,pull_request]
 jobs:
   build:
     name: Build and Test Solverdummies
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -23,8 +23,8 @@ jobs:
 
       - name: Install precice
         run: |
-          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_bullseye.deb 
-          sudo apt install ./libprecice2_2.4.0_bullseye.deb
+          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_focal.deb 
+          sudo apt install ./libprecice2_2.4.0_focal.deb
 
       # - name: upload file artifact
       #   uses: actions/upload-artifact@v3
@@ -47,5 +47,5 @@ jobs:
   
       - name: Run Solverdummies
         run: |
-          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
 
