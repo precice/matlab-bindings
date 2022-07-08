@@ -8,18 +8,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        # - release: latest
+        - release: latest
         - release: R2021b
         - release: R2021a
         - release: R2020b
-        # - release: R2020a
+        - release: R2020a
     steps:
-
-      - name: Fix `version 'GLIBCXX_3.4.26' not found` # from https://github.com/coder/code-server/issues/766#issuecomment-525709055
-        run: |
-          echo "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6" >> ~/.bashrc
-          source ~/.bashrc
-
 
       - name: Install precice
         run: |
@@ -47,5 +41,5 @@ jobs:
   
       - name: Run Solverdummies
         run: |
-          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
 
