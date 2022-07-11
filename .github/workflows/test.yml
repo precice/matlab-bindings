@@ -26,7 +26,7 @@ jobs:
           tree
 
       - name: setup matlab bindings
-        uses: $GITHUB_WORKSPACE/temp/matlab-bindings/.github/workflows/build
+        uses: "$GITHUB_WORKSPACE/temp/matlab-bindings/.github/workflows/build"
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
