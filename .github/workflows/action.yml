@@ -16,9 +16,9 @@ runs:
   steps:
 
     - name: Install precice # could break due to hard-coded link
-      working_directory: $GITHUB_WORKSPACE
       shell: bash
       run: |
+        cd $GITHUB_WORKSPACE
         "wget https://github.com/precice/precice/releases/download/v${{ inputs.precice-version }}/libprecice2_${{ inputs.precice-version }}_focal.deb"
         "sudo apt install ./libprecice2_${{ inputs.precice-version }}_focal.deb"
 
