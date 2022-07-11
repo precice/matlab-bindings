@@ -29,8 +29,6 @@ runs:
 
     - name: Check out repository
       uses: actions/checkout@v3
-      with:
-        path: $GITHUB_WORKSPACE/
 
     - name: Run compilation script
       uses: matlab-actions/run-command@v1
