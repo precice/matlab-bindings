@@ -1,4 +1,4 @@
-name: 'Build Matlab bindings'
+name: 'build'
 description: 'Installs precice and builds the preCICE matlab bindings in the directory ~/matlab-bindings and ends there.'
 
 inputs:
