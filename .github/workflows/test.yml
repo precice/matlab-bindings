@@ -25,10 +25,11 @@ jobs:
           echo $PWD
           ls -a
           tree
+          echo $GITHUB_ACTIONS_PATH
+          printenv
 
       - name: setup matlab bindings
-        working-directory: $GITHUB_WORKSPACE/temp/
-        uses: ./.github/workflows/build
+        uses: $GITHUB_ACTIONS_PATH/test
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
