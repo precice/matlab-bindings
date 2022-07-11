@@ -1,5 +1,5 @@
-name: 'build'
-description: 'Installs precice and builds the preCICE matlab bindings in the directory ~/matlab-bindings and ends there.'
+name: 'Build Matlab bindings'
+description: 'Installs precice and builds the preCICE matlab bindings in the directory. Ends in `$GITHUB_WORKSPACE/matlab-bindings`'
 
 inputs:
   matlab-release:
