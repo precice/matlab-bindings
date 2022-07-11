@@ -15,7 +15,7 @@ jobs:
         - release: R2020a
     steps:
       - name: Checkout code
-          uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: setup matlab bindings
         uses: ./.github/workflows/build
