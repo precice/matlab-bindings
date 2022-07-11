@@ -23,7 +23,7 @@ runs:
     - name: Set up MATLAB
       uses: matlab-actions/setup-matlab@v1
       with: 
-        release: ${{ ipnuts.matlab-release }}
+        release: ${{ inputs.matlab-release }}
 
     - name: Check out repository
       uses: actions/checkout@v3
