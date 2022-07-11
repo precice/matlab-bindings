@@ -20,6 +20,7 @@ jobs:
           path: $GITHUB_WORKSPACE/temp/
 
       - name: print directory
+        working-directory: $GITHUB_WORKSPACE/temp/
         run: |
           echo $PWD
           ls -a
@@ -27,6 +28,7 @@ jobs:
 
       - name: setup matlab bindings
         uses: ./.github/workflows/build
+        working-directory: $GITHUB_WORKSPACE/temp/
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
