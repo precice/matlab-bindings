@@ -16,9 +16,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: print directory
+        run: |
+          echo $PWD
+          ls 
+          tree
 
       - name: setup matlab bindings
-        uses: ./.github/workflows/build
+        uses: ~/matlab-bindings/.github/workflows/build
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
