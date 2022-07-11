@@ -14,8 +14,11 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
+      - name: Checkout code
+          uses: actions/checkout@v2
+
       - name: setup matlab bindings
-        uses: precice/matlab-bindings/build@v2
+        uses: ./.github/workflows/build
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
@@ -24,25 +27,25 @@ jobs:
         run: |
           LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
   
-  test-tutorial:
-    name: Test matlab Tutorials
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-        - release: latest
-        - release: R2021b
-        - release: R2021a
-        - release: R2020b
-        - release: R2020a
-    steps:
-      - name: setup matlab bindings
-        uses: precice/matlab-bindings/build@v2
-        with:
-          matlab-release: ${{ matrix.release }}
-          precice-version: '2.4.0'
+  # test-tutorial:
+  #   name: Test matlab Tutorials
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       include:
+  #       - release: latest
+  #       - release: R2021b
+  #       - release: R2021a
+  #       - release: R2020b
+  #       - release: R2020a
+  #   steps:
+  #     - name: setup matlab bindings
+  #       uses: precice/matlab-bindings/build
+  #       with:
+  #         matlab-release: ${{ matrix.release }}
+  #         precice-version: '2.4.0'
 
-      - name: Run Tutorials
-        run: |
-          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
+  #     - name: Run Tutorials
+  #       run: |
+  #         LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
 

@@ -1,4 +1,5 @@
 name: 'Build Matlab bindings'
+description: 'Installs precice and builds the preCICE matlab bindings in the directory ~/matlab-bindings and ends there.'
 
 inputs:
   matlab-release:
@@ -25,6 +26,7 @@ runs:
         release: ${{ ipnuts.matlab-release }}
 
     - name: Check out repository
+      working-directory: ~/
       uses: actions/checkout@v2
 
     - name: Run compilation script
