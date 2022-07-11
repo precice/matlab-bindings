@@ -1,49 +1,33 @@
-name: Build matlab bindings
-on: [push,pull_request]
-jobs:
-  build:
-    name: Build and Test Solverdummies
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - release: latest
-        - release: R2021b
-        - release: R2021a
-        - release: R2020b
-        - release: R2020a
-    steps:
+name: 'Build Matlab bindings'
 
-      - name: Install precice
-        run: |
-          wget https://github.com/precice/precice/releases/download/v2.4.0/libprecice2_2.4.0_focal.deb 
-          sudo apt install ./libprecice2_2.4.0_focal.deb
+inputs:
+  matlab-release:
+    required: true
+    default: 'latest'
+    description: 'The release of MATLAB to use.'
+  precice-version:
+    required: true
+    default: '2.4.0'
+    description: 'The version of preCICE to use.'
 
-      # - name: upload file artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: precice-package
-      #     path: libprecice2_2.4.0_bullseye.deb
+runs:
+  using: "composite"
+  steps:
 
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v1
-        with: 
-          release: ${{ matrix.release }}
+    - name: Install precice # could break due to hard-coded link
+      run: |
+        "wget https://github.com/precice/precice/releases/download/v${{ inputs.precice-version }}/libprecice2_${{ inputs.precice-version }}_focal.deb"
+        "sudo apt install ./libprecice2_${{ inputs.precice-version }}_focal.deb"
 
-      - name: Check out repository
-        uses: actions/checkout@v2
+    - name: Set up MATLAB
+      uses: matlab-actions/setup-matlab@v1
+      with: 
+        release: ${{ ipnuts.matlab-release }}
 
-      - name: Run compilation script
-        uses: matlab-actions/run-command@v1
-        with:
-          command: compile_matlab_bindings_for_precice
-  
-      # - name: Run Solverdummies
-      #   run: |
-      #     LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+    - name: Check out repository
+      uses: actions/checkout@v2
 
-      - name: Run Tutorials
-        run: |
-          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
-
+    - name: Run compilation script
+      uses: matlab-actions/run-command@v1
+      with:
+        command: compile_matlab_bindings_for_precice
