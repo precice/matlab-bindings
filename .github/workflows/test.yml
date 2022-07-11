@@ -16,9 +16,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          path: $GITHUB_WORKSPACE/temp/
-
+        
       - name: print directory
         working-directory: $GITHUB_WORKSPACE/temp/
         run: |
@@ -29,7 +27,7 @@ jobs:
           printenv
 
       - name: setup matlab bindings
-        uses: '$GITHUB_ACTIONS_PATH/test'
+        uses: ./.github/workflows/build
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
