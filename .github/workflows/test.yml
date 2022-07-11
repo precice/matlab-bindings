@@ -29,7 +29,7 @@ jobs:
           printenv
 
       - name: setup matlab bindings
-        uses: $GITHUB_ACTIONS_PATH/test
+        uses: '$GITHUB_ACTIONS_PATH/test'
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
