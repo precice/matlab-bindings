@@ -19,8 +19,8 @@ runs:
       shell: bash
       run: |
         cd $GITHUB_WORKSPACE
-        "wget https://github.com/precice/precice/releases/download/v${{ inputs.precice-version }}/libprecice2_${{ inputs.precice-version }}_focal.deb"
-        "sudo apt install ./libprecice2_${{ inputs.precice-version }}_focal.deb"
+        wget https://github.com/precice/precice/releases/download/v${{ inputs.precice-version }}/libprecice2_${{ inputs.precice-version }}_focal.deb
+        sudo apt install ./libprecice2_${{ inputs.precice-version }}_focal.deb
 
     - name: Set up MATLAB
       uses: matlab-actions/setup-matlab@v1
