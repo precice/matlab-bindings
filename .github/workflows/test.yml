@@ -26,7 +26,7 @@ jobs:
           printenv
 
       - name: setup matlab bindings
-        uses: ./.github/workflows/build.yml
+        uses: ./.github/workflows/
         with:
           matlab-release: ${{ matrix.release }}
           precice-version: '2.4.0'
