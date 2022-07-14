@@ -3,7 +3,7 @@ name: 'Test Matlab bindings'
 on: [push,pull_request]
 jobs:
   test-solverdummies:
-    name: Test matlab solverdummmies
+    name: Test Matlab solverdummmies
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: build matlab bindings
+      - name: build Matlab bindings
         uses: ./.github/workflows/
         with:
           matlab-release: ${{ matrix.release }}
@@ -43,7 +43,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: build matlab bindings
+      - name: build Matlab bindings
         uses: ./.github/workflows/
         with:
           matlab-release: ${{ matrix.release }}

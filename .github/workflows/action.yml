@@ -1,11 +1,11 @@
 name: 'Build Matlab bindings'
-description: 'Installs precice and builds the preCICE matlab bindings in the directory. Ends in `$GITHUB_WORKSPACE/matlab-bindings`'
+description: 'Installs preCICE and builds the preCICE Matlab bindings in the directory. Ends in `$GITHUB_WORKSPACE/matlab-bindings`'
 
 inputs:
   matlab-release:
     required: true
     default: 'latest'
-    description: 'The release of MATLAB to use.'
+    description: 'The release of Matlab to use.'
   precice-version:
     required: true
     default: '2.4.0'
@@ -22,7 +22,7 @@ runs:
         wget https://github.com/precice/precice/releases/download/v${{ inputs.precice-version }}/libprecice2_${{ inputs.precice-version }}_focal.deb
         sudo apt install ./libprecice2_${{ inputs.precice-version }}_focal.deb
 
-    - name: Set up MATLAB
+    - name: Set up Matlab
       uses: matlab-actions/setup-matlab@v1
       with: 
         release: ${{ inputs.matlab-release }}
