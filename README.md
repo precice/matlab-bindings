@@ -79,6 +79,25 @@ $ pkg-config --cflags --libs libprecice
 
 If everything until this point looks good and you are still facing problems and you installed preCICE to a custom location using `CMAKE_INSTALL_PREFIX`, MATLAB might not be able to find `libprecice.so`, since it is not discoverable. Please add the location of `libprecice.so` (see `pkg-config --libs-only-L libprecice`, without the `-L`) to your `LD_LIBRARY_PATH`. For further instructions refer to the [MATLAB documentation](https://de.mathworks.com/help/matlab/matlab_external/set-run-time-library-path-on-linux-systems.html).
 
+## version \`GLIBCXX_3.4.26' not found
+
+```
+Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
+/usr/local/MATLAB/R2021a/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6:
+version `GLIBCXX_3.4.26' not found (required by /lib/x86_64-linux-gnu/libprecice.so.2)
+```
+
+Matlab ships with a version of `libstdc++.so.6` that may be too old. This version does not find the preCICE C++ library. By using the system-provided version of `libstdc++.so.6`, you can fix the error.
+
+So far, this problem was encountered with Ubuntu Version `20.04.04 LTS`, GNU C++ `9.4.0`, on matlab versions `R2020b`, `R2021a`, `R2021b`.
+
+To solve this error start matlab with the following command:
+
+```shell
+LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
+```
+
+
 # Contributors
 
 * [Dominik Volland](https://github.com/Dominanz) contributed first working prototype in [PR #494 on `precice/precice`](https://github.com/precice/precice/pull/494)
