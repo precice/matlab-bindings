@@ -6,7 +6,7 @@ Note that the first three digits of the version number of the bindings indicate 
 
 ## Requirements
 
-MATLAB R2018a or later is required. The bindings were tested on R2018b, R2019a, R2019b and R2020b.
+MATLAB R2018a or later is required. The bindings are tested on R2021b, R2021a, R2020b, R2020a.
 
 ## Restrictions
 
