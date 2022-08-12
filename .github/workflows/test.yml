@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/workflows/
         with:
           matlab-release: ${{ matrix.release }}
-          precice-version: '2.4.0'
+          precice-version: '2.5.0'
 
       - name: Run Solverdummies
         shell: bash
@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/workflows/
         with:
           matlab-release: ${{ matrix.release }}
-          precice-version: '2.4.0'
+          precice-version: '2.5.0'
 
       - name: Run Tutorials
         run: |
