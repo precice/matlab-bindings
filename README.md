@@ -104,3 +104,4 @@ LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
 * [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
 * [Benjamin Rodenberg](https://github.com/BenjaminRodenberg)
 * [Frédéric Simonis](https://github.com/fsimonis)
+* [Erik Scheurer](https://github.com/erikscheurer) contributed automated CI tests.
