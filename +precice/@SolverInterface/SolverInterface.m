@@ -325,24 +325,6 @@ classdef SolverInterface < handle
             preciceGateway(uint8(74), int32(dataID), int32(valueIndex), values);
         end
 
-                % writeBlockVectorGradientData
-        function writeBlockVectorGradientData(obj, dataID, valueIndices, gradientValues)
-            if ~isa(valueIndices, 'int32')
-                warning('valueIndices should be allocated as int32 to prevent copying.');
-                valueIndices = int32(valueIndices);
-            end
-
-            inSize = length(valueIndices);
-            obj.checkDimensions(size(gradientValues, 2), inSize)
-            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
-            preciceGateway(uint8(73), int32(dataID), int32(inSize), valueIndices, gradientValues);
-        end
-
-        % writeVectorGradientData
-        function writeVectorGradientData(obj, dataID, valueIndex, gradientValues)
-            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), gradientValues);
-        end
-
         % writeBlockScalarGradientData
         function writeBlockScalarGradientData(obj, dataID, valueIndices, gradientValues)
 
