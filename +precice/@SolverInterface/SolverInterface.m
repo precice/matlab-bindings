@@ -302,6 +302,66 @@ classdef SolverInterface < handle
             value = preciceGateway(uint8(71),int32(dataID),int32(valueIndex));
         end
 
+        % isGradientDataRequired
+        function bool = isGradientDataRequired(obj, dataID)
+            bool = preciceGateway(uint8(72), int32(dataID));
+        end
+
+        % writeBlockVectorGradientData
+        function writeBlockVectorGradientData(obj, dataID, valueIndices, gradientValues)
+            if ~isa(valueIndices, 'int32')
+                warning('valueIndices should be allocated as int32 to prevent copying.');
+                valueIndices = int32(valueIndices);
+            end
+
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(gradientValues, 2), inSize)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
+            preciceGateway(uint8(73), int32(dataID), int32(inSize), valueIndices, gradientValues);
+        end
+
+        % writeVectorGradientData
+        function writeVectorGradientData(obj, dataID, valueIndex, values)
+            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), values);
+        end
+
+                % writeBlockVectorGradientData
+        function writeBlockVectorGradientData(obj, dataID, valueIndices, gradientValues)
+            if ~isa(valueIndices, 'int32')
+                warning('valueIndices should be allocated as int32 to prevent copying.');
+                valueIndices = int32(valueIndices);
+            end
+
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(gradientValues, 2), inSize)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
+            preciceGateway(uint8(73), int32(dataID), int32(inSize), valueIndices, gradientValues);
+        end
+
+        % writeVectorGradientData
+        function writeVectorGradientData(obj, dataID, valueIndex, gradientValues)
+            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), gradientValues);
+        end
+
+        % writeBlockScalarGradientData
+        function writeBlockScalarGradientData(obj, dataID, valueIndices, gradientValues)
+
+            if ~isa(valueIndices, 'int32')
+                warning('valueIndices should be allocated as int32 to prevent copying.');
+                valueIndices = int32(valueIndices);
+            end
+
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(gradientValues, 2), inSize)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
+            preciceGateway(uint8(75), int32(dataID), int32(inSize), valueIndices, gradientValues);
+        end
+
+        % writeScalarGradientData
+        function writeScalarGradientData(obj, dataID, valueIndex, gradientValues)
+            preciceGateway(uint8(76), int32(dataID), int32(valueIndex), gradientValues);
+        end
+
         %% Helper functions
         % Check for dxn convention
         function checkDimensions(obj, a, b)
