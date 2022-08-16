@@ -1,0 +1,55 @@
+name: 'Test Matlab bindings'
+
+on: [push,pull_request]
+jobs:
+  test-solverdummies:
+    name: Test Matlab solverdummmies
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+        - release: latest
+        - release: R2021b
+        - release: R2021a
+        - release: R2020b
+        - release: R2020a
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: build Matlab bindings
+        uses: ./.github/workflows/
+        with:
+          matlab-release: ${{ matrix.release }}
+          precice-version: '2.5.0'
+
+      - name: Run Solverdummies
+        shell: bash
+        run: |
+          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+  
+  test-tutorial:
+    name: Test matlab Tutorials
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+        - release: latest
+        - release: R2021b
+        - release: R2021a
+        - release: R2020b
+        - release: R2020a
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: build Matlab bindings
+        uses: ./.github/workflows/
+        with:
+          matlab-release: ${{ matrix.release }}
+          precice-version: '2.5.0'
+
+      - name: Run Tutorials
+        run: |
+          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
+
