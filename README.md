@@ -6,7 +6,7 @@ Note that the first three digits of the version number of the bindings indicate 
 
 ## Requirements
 
-MATLAB R2018a or later is required. The bindings were tested on R2018b, R2019a, R2019b and R2020b.
+MATLAB R2018a or later is required. The bindings are tested on R2021b, R2021a, R2020b, R2020a.
 
 ## Restrictions
 
@@ -104,3 +104,4 @@ LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
 * [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
 * [Benjamin Rodenberg](https://github.com/BenjaminRodenberg)
 * [Frédéric Simonis](https://github.com/fsimonis)
+* [Erik Scheurer](https://github.com/erikscheurer) contributed automated CI tests.

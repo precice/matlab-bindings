@@ -8,7 +8,7 @@ inputs:
     description: 'The release of Matlab to use.'
   precice-version:
     required: true
-    default: '2.4.0'
+    default: '2.5.0'
     description: 'The version of preCICE to use.'
 
 runs:
