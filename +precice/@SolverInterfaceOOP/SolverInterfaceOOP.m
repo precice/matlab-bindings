@@ -368,7 +368,5 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         function checkDimensions(obj, a, b)
             assert(a ==  b, 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
         end
-            
-        
     end
 end

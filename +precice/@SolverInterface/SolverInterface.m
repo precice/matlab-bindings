@@ -321,8 +321,8 @@ classdef SolverInterface < handle
         end
 
         % writeVectorGradientData
-        function writeVectorGradientData(obj, dataID, valueIndex, values)
-            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), values);
+        function writeVectorGradientData(obj, dataID, valueIndex, gradientValues)
+            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), gradientValues);
         end
 
         % writeBlockScalarGradientData
