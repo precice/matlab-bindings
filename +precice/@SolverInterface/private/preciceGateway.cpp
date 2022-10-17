@@ -60,7 +60,13 @@ enum class FunctionID {
     readBlockVectorData = 68,
     readVectorData = 69,
     readBlockScalarData = 70,
-    readScalarData = 71
+    readScalarData = 71,
+
+    isGradientDataRequired = 72,
+    writeBlockVectorGradientData = 73,
+    writeVectorGradientData = 74,
+    writeBlockScalarGradientData = 75,
+    writeScalarGradientData = 76,
 };
 
 class MexFunction: public matlab::mex::Function {
@@ -456,6 +462,47 @@ public:
                 double value;
                 interface->readScalarData(dataID[0],valueIndex[0],value);
                 outputs[0] = factory.createScalar<double>(value);
+                break;
+            }
+            case FunctionID::isGradientDataRequired:
+            {
+                const TypedArray<int32_t> dataID = inputs[1];
+                bool output = interface->isGradientDataRequired(dataID[0]);
+                outputs[0] = factory.createScalar<bool>(output);
+                break;
+            }
+            case FunctionID::writeBlockVectorGradientData:
+            {
+                const TypedArray<int32_t> dataID = inputs[1];
+                const TypedArray<int32_t> size = inputs[2];
+                const TypedArray<int32_t> vertexIDs = inputs[3];
+                const TypedArray<double> gradientValues = inputs[4];
+                interface->writeBlockVectorGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
+                break;
+            }
+            case FunctionID::writeScalarGradientData:
+            {
+                const TypedArray<int32_t> dataID = inputs[1];
+                const TypedArray<int32_t> vertexID = inputs[2];
+                const TypedArray<double> gradientValues = inputs[3];
+                interface->writeScalarGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
+                break;
+            }
+            case FunctionID::writeVectorGradientData:
+            {
+                const TypedArray<int32_t> dataID = inputs[1];
+                const TypedArray<int32_t> vertexID = inputs[2];
+                const TypedArray<double> gradientValues = inputs[3];
+                interface->writeVectorGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
+                break;
+            }
+            case FunctionID::writeBlockScalarGradientData:
+            {
+                const TypedArray<int32_t> dataID = inputs[1];
+                const TypedArray<int32_t> size = inputs[2];
+                const TypedArray<int32_t> vertexIDs = inputs[3];
+                const TypedArray<double> gradientValues = inputs[4];
+                interface->writeBlockScalarGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
                 break;
             }
             default:
