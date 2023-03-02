@@ -146,12 +146,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             end
             id = feval(obj.oMexHost,"preciceGateway",uint8(41),meshName);
         end
-        
-        % getMeshIDs
-        function ids = getMeshIDs(obj)
-            ids = feval(obj.oMexHost,"preciceGateway",uint8(42));
-        end
-        
+
         % getMeshHandle not yet implemented
         
         % setMeshVertex

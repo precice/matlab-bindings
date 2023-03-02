@@ -33,7 +33,6 @@ enum class FunctionID {
     
     hasMesh = 40,
     getMeshID = 41,
-    getMeshIDs = 42,
     getMeshHandle = 43,
     setMeshVertex = 44,
     getMeshVertexSize = 45,
@@ -218,13 +217,7 @@ public:
                 outputs[0] = factory.createScalar<int32_t>(id);
                 break;
             }
-            case FunctionID::getMeshIDs:
-            {
-                const std::set<int> ids = interface->getMeshIDs();
-                outputs[0] = factory.createArray<int32_t>({1,ids.size()}, &*ids.begin(), &*ids.end());
-                break;
-            }
-            
+
             //getMeshHandle: Not implemented yet
             
             case FunctionID::setMeshVertex:

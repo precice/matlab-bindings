@@ -130,12 +130,7 @@ classdef SolverInterface < handle
             end
             id = preciceGateway(uint8(41),meshName);
         end
-        
-        % getMeshIDs
-        function ids = getMeshIDs(obj)
-            ids = preciceGateway(uint8(42));
-        end
-        
+
         % getMeshHandle not yet implemented
         
         % setMeshVertex
