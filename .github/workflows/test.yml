@@ -19,7 +19,7 @@ jobs:
       - name: Install precice
         uses: precice/setup-precice-action@main
         with:
-          precice-version: develop
+          precice-version: 2.5.0
 
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
@@ -34,6 +34,15 @@ jobs:
         with:
           command: compile_matlab_bindings_for_precice
 
+      - name: debug
+        shell: bash
+        run: |
+          echo "release=${{ matrix.release }}"
+          echo $PATH
+          echo $LD_LIBRARY_PATH
+          echo $LD_PRELOAD
+          echo $MATLABPATH
+
       - name: Run Solverdummies
         shell: bash
         run: |
@@ -43,7 +52,7 @@ jobs:
     name: Test matlab Tutorials
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
         - release: latest
@@ -53,10 +62,15 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
+
+      - name: temporary crash, only solverdummy needed atm
+        run: |
+          exit 1
+
       - name: Install precice
         uses: precice/setup-precice-action@main
         with:
-          precice-version: develop
+          precice-version: 2.5.0
 
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
