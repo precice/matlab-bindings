@@ -24,7 +24,7 @@ jobs:
           apt-get install sudo
 
       - name: install precice
-        uses: precice/precice-setup-action@main
+        uses: precice/setup-precice-action@main
 
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
