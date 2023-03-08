@@ -18,11 +18,6 @@ jobs:
         - release: R2020a
     steps:
 
-      - name: install sudo
-        run: |
-          apt-get update
-          apt-get install sudo
-
       - name: install precice
         uses: precice/setup-precice-action@main
 
