@@ -5,7 +5,7 @@ jobs:
   test-solverdummies:
     name: Test Matlab solverdummmies
     runs-on: ubuntu-latest
-    container: precice/precice:develop
+    # container: precice/precice:develop
     strategy:
       fail-fast: false
       matrix:
@@ -22,6 +22,9 @@ jobs:
         run: |
           apt-get update
           apt-get install sudo
+
+      - name: install precice
+        uses: precice/precice-setup-action@main
 
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
