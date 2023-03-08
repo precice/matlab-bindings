@@ -10,6 +10,7 @@ jobs:
       matrix:
         include:
         - release: latest
+        - release: R2022a
         - release: R2021b
         - release: R2021a
         - release: R2020b
@@ -23,7 +24,7 @@ jobs:
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
         with: 
-          release: ${{ inputs.matlab-release }}
+          release: ${{ matrix.release }}
 
       - name: Check out repository
         uses: actions/checkout@v3
@@ -42,9 +43,11 @@ jobs:
     name: Test matlab Tutorials
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
         - release: latest
+        - release: R2022a
         - release: R2021b
         - release: R2021a
         - release: R2020b
@@ -58,7 +61,7 @@ jobs:
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
         with: 
-          release: ${{ inputs.matlab-release }}
+          release: ${{ matrix.release }}
 
       - name: Check out repository
         uses: actions/checkout@v3
