@@ -15,14 +15,23 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
-      - name: Checkout code
+      - name: Install precice
+        uses: precice/setup-precice-action@main
+        with:
+          precice-version: develop
+
+      - name: Set up Matlab
+        uses: matlab-actions/setup-matlab@v1
+        with: 
+          release: ${{ inputs.matlab-release }}
+
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: build Matlab bindings
-        uses: ./.github/workflows/
+      - name: Run compilation script
+        uses: matlab-actions/run-command@v1
         with:
-          matlab-release: ${{ matrix.release }}
-          precice-version: '2.5.0'
+          command: compile_matlab_bindings_for_precice
 
       - name: Run Solverdummies
         shell: bash
@@ -41,14 +50,23 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
-      - name: Checkout code
+      - name: Install precice
+        uses: precice/setup-precice-action@main
+        with:
+          precice-version: develop
+
+      - name: Set up Matlab
+        uses: matlab-actions/setup-matlab@v1
+        with: 
+          release: ${{ inputs.matlab-release }}
+
+      - name: Check out repository
         uses: actions/checkout@v3
 
-      - name: build Matlab bindings
-        uses: ./.github/workflows/
+      - name: Run compilation script
+        uses: matlab-actions/run-command@v1
         with:
-          matlab-release: ${{ matrix.release }}
-          precice-version: '2.5.0'
+          command: compile_matlab_bindings_for_precice
 
       - name: Run Tutorials
         run: |
