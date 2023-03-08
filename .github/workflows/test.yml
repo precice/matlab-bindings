@@ -18,6 +18,11 @@ jobs:
         - release: R2020a
     steps:
 
+      - name: install sudo
+        run: |
+          apt-get update
+          apt-get install sudo
+
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
         with: 
@@ -25,11 +30,6 @@ jobs:
 
       - name: Check out repository
         uses: actions/checkout@v3
-
-      - name: install sudo
-        run: |
-          apt-get update
-          apt-get install sudo
 
       - name: Run compilation script
         uses: matlab-actions/run-command@v1
@@ -65,10 +65,6 @@ jobs:
         - release: R2020b
         - release: R2020a
     steps:
-
-      - name: temporary crash, only solverdummy needed atm
-        run: |
-          exit 1
 
       - name: install sudo
         run: |
