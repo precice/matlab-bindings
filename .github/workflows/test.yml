@@ -40,13 +40,12 @@ jobs:
       - name: Run Solverdummies
         shell: bash
         run: |
-          export LD_PRELOAD="/usr/lib/x86_64-lin-ux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
           matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
   
   test-tutorial:
     name: Test matlab Tutorials
     runs-on: ubuntu-latest
-    container: precice/precice:develop
     strategy:
       fail-fast: true
       matrix:
@@ -79,6 +78,6 @@ jobs:
 
       - name: Run Tutorials
         run: |
-          export LD_PRELOAD="/usr/lib/x86_64-lin-ux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
           matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
 
