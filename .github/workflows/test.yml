@@ -45,8 +45,8 @@ jobs:
           echo $LD_LIBRARY_PATH
           echo $LD_PRELOAD
           echo $MATLABPATH
-          ll /usr/lib/x86_64-linux-gnu/
-          ll "/usr/local/MATLAB/${{ matrix.release }}/bin/glnxa64/"
+          ls -l /usr/lib/x86_64-linux-gnu/
+          ls -l "/usr/local/MATLAB/${{ matrix.release }}/bin/glnxa64/"
 
       - name: Run Solverdummies
         shell: bash
