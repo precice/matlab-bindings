@@ -4,7 +4,7 @@ on: [push,pull_request]
 jobs:
   test-solverdummies:
     name: Test Matlab solverdummmies
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # container: precice/precice:develop # does not work somehow because of sudo
     # see e.g. https://github.com/precice/matlab-bindings/actions/runs/4366307887/jobs/7636136347
     strategy:
@@ -45,7 +45,7 @@ jobs:
   
   test-tutorial:
     name: Test matlab Tutorials
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
