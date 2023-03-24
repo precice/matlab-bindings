@@ -37,21 +37,11 @@ jobs:
         with:
           command: compile_matlab_bindings_for_precice
 
-      - name: debug
-        shell: bash
-        run: |
-          echo "release=${{ matrix.release }}"
-          echo $PATH
-          echo $LD_LIBRARY_PATH
-          echo $LD_PRELOAD
-          echo $MATLABPATH
-          ls -l /usr/lib/x86_64-linux-gnu/
-          ls -l "/usr/local/MATLAB/${{ matrix.release }}/bin/glnxa64/"
-
       - name: Run Solverdummies
         shell: bash
         run: |
-          LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+          export LD_PRELOAD="/usr/lib/x86_64-lin-ux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
   
   test-tutorial:
     name: Test matlab Tutorials
@@ -69,10 +59,10 @@ jobs:
         - release: R2020a
     steps:
 
-      - name: install sudo
-        run: |
-          apt-get update
-          apt-get install sudo
+      - name: install precice
+        uses: precice/setup-precice-action@main
+        with:
+          precice-version: v2.5.0
 
       - name: Set up Matlab
         uses: matlab-actions/setup-matlab@v1
@@ -89,5 +79,6 @@ jobs:
 
       - name: Run Tutorials
         run: |
-          LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
+          export LD_PRELOAD="/usr/lib/x86_64-lin-ux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
 
