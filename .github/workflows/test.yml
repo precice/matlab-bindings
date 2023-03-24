@@ -40,7 +40,7 @@ jobs:
       - name: Run Solverdummies
         shell: bash
         run: |
-          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5:/usr/lib/x86_64-linux-gnu/libcurl.so.4"
           matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
   
   test-tutorial:
@@ -78,6 +78,6 @@ jobs:
 
       - name: Run Tutorials
         run: |
-          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5"
+          export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5:/usr/lib/x86_64-linux-gnu/libcurl.so.4"
           matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
 
