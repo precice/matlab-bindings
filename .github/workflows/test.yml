@@ -5,7 +5,8 @@ jobs:
   test-solverdummies:
     name: Test Matlab solverdummmies
     runs-on: ubuntu-latest
-    # container: precice/precice:develop
+    # container: precice/precice:develop # does not work somehow because of sudo
+    # see e.g. https://github.com/precice/matlab-bindings/actions/runs/4366307887/jobs/7636136347
     strategy:
       fail-fast: false
       matrix:
@@ -44,13 +45,14 @@ jobs:
           echo $LD_LIBRARY_PATH
           echo $LD_PRELOAD
           echo $MATLABPATH
+          sudo apt install locate
           locate libgfortran.so
           ll "/usr/local/MATLAB/${{ matrix.release }}/bin/glnxa64/"
 
       - name: Run Solverdummies
         shell: bash
         run: |
-          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
+          LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverOne;" & LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./solverdummy" -batch "addpath('../'); solverdummy precice-config.xml SolverTwo;"
   
   test-tutorial:
     name: Test matlab Tutorials
@@ -88,5 +90,5 @@ jobs:
 
       - name: Run Tutorials
         run: |
-          LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
+          LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_I;" & LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5" matlab -sd "./tutorial/implicit" -batch "addpath('../../'); Solver_U;"
 
