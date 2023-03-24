@@ -44,6 +44,8 @@ jobs:
           echo $LD_LIBRARY_PATH
           echo $LD_PRELOAD
           echo $MATLABPATH
+          locate libgfortran.so
+          ll "/usr/local/MATLAB/${{ matrix.release }}/bin/glnxa64/"
 
       - name: Run Solverdummies
         shell: bash
