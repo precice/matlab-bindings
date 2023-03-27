@@ -83,51 +83,29 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             bool = feval(obj.oMexHost,"preciceGateway",uint8(21));
         end
         
-        % isReadDataAvailable
-        function bool = isReadDataAvailable(obj)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(22));
-        end
-        
-        % isWriteDataRequired
-        function bool = isWriteDataRequired(obj,dt)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(23),dt);
-        end
-        
         % isTimestepComplete
         function bool = isTimestepComplete(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(24));
         end
         
-        % hasToEvaluateSurrogateModel
-        function bool = hasToEvaluateSurrogateModel(obj)
+        % requiresInitialData
+        function bool = requiresInitialData(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(25));
         end
-        
-        % hasToEvaluateFineModel
-        function bool = hasToEvaluateFineModel(obj)
+
+        % requiresReadingCheckpoint
+        function bool = requiresReadingCheckpoint(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(26));
+        end
+
+        % requiresWritingCheckpoint
+        function bool = requiresWritingCheckpoint(obj)
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(27));
         end
 
         % getVersionInformation
         function s = getVersionInformation(obj)
             s = feval(obj.oMexHost,"preciceGateway",uint8(27));
-        end
-        
-        %% Action Methods
-        % isActionRequired
-        function bool = isActionRequired(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(30),action);
-        end
-        
-        % markActionFulfilled
-        function markActionFulfilled(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            feval(obj.oMexHost,"preciceGateway",uint8(31),action);
         end
         
         %% Mesh Access
@@ -138,17 +116,29 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             end
             bool = feval(obj.oMexHost,"preciceGateway",uint8(40),meshName);
         end
-        
-        % getMeshID
-        function id = getMeshID(obj,meshName)
+
+        % requiresMeshConnectivityFor
+        function bool = requiresMeshConnectivityFor(obj,meshName,dataName)
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            id = feval(obj.oMexHost,"preciceGateway",uint8(41),meshName);
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(41),meshName,dataName);
+        end
+        
+        % requiresGradientDataFor
+        function bool = requiresGradientDataFor(obj,meshName,dataName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(42),meshName,dataName);
         end
 
-        % getMeshHandle not yet implemented
-        
         % setMeshVertex
         function vertexId = setMeshVertex(obj,meshID,position)
             vertexId = feval(obj.oMexHost,"preciceGateway",uint8(44),int32(meshID),position);
@@ -166,42 +156,52 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(46),int32(meshID),int32(inSize),positions);
         end
         
-        % getMeshVertices
-        function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = length(vertexIds);
-            positions = feval(obj.oMexHost,"preciceGateway",uint8(47),int32(meshID),int32(inSize),vertexIds);
-        end
-        
-        % getMeshVertexIDsFromPositions
-        function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
-            obj.checkDimensions(size(positions, 1), obj.getDimensions())
-            inSize = size(positions,2);
-            vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(48),int32(meshID),int32(inSize),positions);
-        end
-        
         % setMeshEdge
         function edgeID = setMeshEdge(obj, meshID, firstVertexID, secondVertexID)
             edgeID = feval(obj.oMexHost,"preciceGateway",uint8(49),int32(meshID),int32(firstVertexID),int32(secondVertexID));
+        end
+
+        % setMeshEdges
+        function edgeIDs = setMeshEdges(obj, meshID, vertices)
+            obj.checkDimensions(size(vertices,1), 2)
+            inSize = size(vertices,2);
+            edgeIDs = feval(obj.oMexHost,"preciceGateway",uint8(51),int32(meshID),int32(inSize),vertices);
         end
         
         % setMeshTriangle
         function setMeshTriangle(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID)
             feval(obj.oMexHost,"preciceGateway",uint8(50),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID));
         end
-        
-        % setMeshTriangleWithEdges
-        function setMeshTriangleWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID)
-            feval(obj.oMexHost,"preciceGateway",uint8(51),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
+
+        % setMeshTriangles
+        function setMeshTriangles(obj, meshID, vertices)
+            obj.checkDimensions(size(vertices,1), 3)
+            inSize = size(vertices,2);
+            feval(obj.oMexHost,"preciceGateway",uint8(53),int32(meshID),int32(inSize),vertices);
         end
         
         % setMeshQuad
         function setMeshQuad(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID, fourthEdgeID)
             feval(obj.oMexHost,"preciceGateway",uint8(52),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID),int32(fourthEdgeID));
         end
-        
-        % setMeshQuadWithEdges
-        function setMeshQuadWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
-            feval(obj.oMexHost,"preciceGateway",uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+
+        % setMeshQuads
+        function setMeshQuads(obj, meshID, vertices)
+            obj.checkDimensions(size(vertices,1), 4)
+            inSize = size(vertices,2);
+            feval(obj.oMexHost,"preciceGateway",uint8(54),int32(meshID),int32(inSize),edges);
+        end
+
+        % setMeshTetrahedron
+        function setMeshTetrahedron(obj, meshID, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
+            feval(obj.oMexHost,"preciceGateway",uint8(55),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+        end
+
+        % setMeshTetrahedra
+        function setMeshTetrahedra(obj, meshID, vertices)
+            obj.checkDimensions(size(vertices,1), 4)
+            inSize = size(vertices,2);
+            feval(obj.oMexHost,"preciceGateway",uint8(56),int32(meshID),int32(inSize),vertices);
         end
         
         % setMeshAccessRegion - EXPERIMENTAL
@@ -215,26 +215,13 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
         end
         
-        % isMeshConnectivityRequired
-        function bool = isMeshConnectivityRequired(meshID)
-            bool = preciceGateway(uint8(54),int32(meshID))
-        end
-                
         %% Data Access
-        % hasDataID
+        % hasData
         function bool = hasData(obj,dataName,meshID)
             if ischar(dataName)
                 dataName = string(dataName);
             end
             bool = feval(obj.oMexHost,"preciceGateway",uint8(60),dataName,int32(meshID));
-        end
-        
-        % getDataID
-        function id = getDataID(obj,dataName,meshID)
-            if ischar(dataName)
-                dataName = string(dataName);
-            end
-            id = feval(obj.oMexHost,"preciceGateway",uint8(61),dataName,int32(meshID));
         end
         
         % mapReadDataTo
@@ -314,11 +301,6 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         end
 
         %% Data Access
-        % isGradientDataRequired
-        function bool = isGradientDataRequired(obj, dataID)
-            bool = feval(obj.oMexHost, "preciceGateway", uint8(72), int32(dataID));
-        end
-
         % writeBlockVectorGradientData
         function writeBlockVectorGradientData(obj, dataID, valueIndices, gradientValues)
             if ~isa(valueIndices, 'int32')

@@ -157,69 +157,37 @@ public:
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::isReadDataAvailable:
-            {
-                bool result = interface->isReadDataAvailable();
-                outputs[0] = factory.createArray<bool>({1,1}, {result});
-                break;
-            }
-            case FunctionID::isWriteDataRequired:
-            {
-                const TypedArray<double> dt_old = inputs[1];
-                bool result = interface->isWriteDataRequired(dt_old[0]);
-                outputs[0] = factory.createArray<bool>({1,1}, {result});
-                break;
-            }
             case FunctionID::isTimeWindowComplete:
             {
                 bool result = interface->isTimeWindowComplete();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::hasToEvaluateSurrogateModel:
+            case FunctionID::requiresInitialData:
             {
-                bool result = interface->hasToEvaluateSurrogateModel();
+                bool result = interface->requiresInitialData();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::hasToEvaluateFineModel:
+            case FunctionID::requiresReadingCheckpoint:
             {
-                bool result = interface->hasToEvaluateFineModel();
+                bool result = interface->requiresReadingCheckpoint();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-
-            case FunctionID::isActionRequired:
+            case FunctionID::requiresWritingCheckpoint:
             {
-                const StringArray action = inputs[1];
-                bool result = interface->isActionRequired(action[0]);
+                bool result = interface->requiresWritingCheckpoint();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
                 break;
             }
-            case FunctionID::markActionFulfilled:
-            {
-                const StringArray action = inputs[1];
-                interface->markActionFulfilled(action[0]);
-                break;
-            }
-            
             case FunctionID::hasMesh:
             {
                 const StringArray meshName = inputs[1];
                 bool output = interface->hasMesh(meshName[0]);
                 outputs[0] = factory.createScalar<bool>(output);
                 break;
-            }
-            case FunctionID::getMeshID:
-            {
-                const StringArray meshName = inputs[1];
-                int id = interface->getMeshID(meshName[0]);
-                outputs[0] = factory.createScalar<int32_t>(id);
-                break;
-            }
-
-            //getMeshHandle: Not implemented yet
-            
+            }            
             case FunctionID::setMeshVertex:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -246,28 +214,6 @@ public:
                 outputs[0] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
                 break;
             }
-            case FunctionID::getMeshVertices:
-            {
-                const TypedArray<int32_t> meshID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> ids = inputs[3];
-                buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
-                double* positions = positions_ptr.get();
-                interface->getMeshVertices(meshID[0],size[0],&*ids.begin(),positions);
-                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
-                break;
-            }
-            case FunctionID::getMeshVertexIDsFromPositions:
-            {
-                const TypedArray<int32_t> meshID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<double> positions = inputs[3];
-                buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
-                int32_t* ids = ids_ptr.get();
-                interface->getMeshVertexIDsFromPositions(meshID[0],size[0],&*positions.begin(),ids);
-                outputs[0] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
-                break;
-            }
             case FunctionID::setMeshEdge:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -286,15 +232,6 @@ public:
                 interface->setMeshTriangle(meshID[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0]);
                 break;
             }
-            case FunctionID::setMeshTriangleWithEdges:
-            {
-                const TypedArray<int32_t> meshID = inputs[1];
-                const TypedArray<int32_t> firstVertexID = inputs[2];
-                const TypedArray<int32_t> secondVertexID = inputs[3];
-                const TypedArray<int32_t> thirdVertexID = inputs[3];
-                interface->setMeshTriangleWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0]);
-                break;
-            }
             case FunctionID::setMeshQuad:
             {
                 const TypedArray<int32_t> meshID = inputs[1];
@@ -303,16 +240,6 @@ public:
                 const TypedArray<int32_t> thirdEdgeID = inputs[3];
                 const TypedArray<int32_t> fourthEdgeID = inputs[4];
                 interface->setMeshQuad(meshID[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0],fourthEdgeID[0]);
-                break;
-            }
-            case FunctionID::setMeshQuadWithEdges:
-            {
-                const TypedArray<int32_t> meshID = inputs[1];
-                const TypedArray<int32_t> firstVertexID = inputs[2];
-                const TypedArray<int32_t> secondVertexID = inputs[3];
-                const TypedArray<int32_t> thirdVertexID = inputs[3];
-                const TypedArray<int32_t> fourthVertexID = inputs[3];
-                interface->setMeshQuadWithEdges(meshID[0],firstVertexID[0],secondVertexID[0],thirdVertexID[0],fourthVertexID[0]);
                 break;
             }
             case FunctionID::setMeshAccessRegion:
@@ -335,33 +262,12 @@ public:
                 outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
                 break;
             } 
-            case FunctionID::isMeshConnectivityRequired:
-            {
-                const TypedArray<int32_t> meshID = inputs[1];
-                bool output = interface->isMeshConnectivityRequired(meshID[0]);
-                outputs[0] = factory.createScalar<bool>(output);
-                break;
-            }
             case FunctionID::hasData:
             {
                 const StringArray dataName = inputs[1];
                 const TypedArray<int32_t> meshID = inputs[2];
                 bool output = interface->hasData(dataName[0],meshID[0]);
                 outputs[0] = factory.createScalar<bool>(output);
-                break;
-            }
-            case FunctionID::getDataID:
-            {
-                const StringArray dataName = inputs[1];
-                const TypedArray<int32_t> meshID = inputs[2];
-                int id = interface->getDataID(dataName[0],meshID[0]);
-                outputs[0] = factory.createScalar<int32_t>(id);
-                break;
-            }
-            case FunctionID::mapReadDataTo:
-            {
-                const TypedArray<int32_t> toMeshID = inputs[1];
-                interface->mapReadDataTo(toMeshID[0]);
                 break;
             }
             case FunctionID::mapWriteDataFrom:
@@ -455,13 +361,6 @@ public:
                 double value;
                 interface->readScalarData(dataID[0],valueIndex[0],value);
                 outputs[0] = factory.createScalar<double>(value);
-                break;
-            }
-            case FunctionID::isGradientDataRequired:
-            {
-                const TypedArray<int32_t> dataID = inputs[1];
-                bool output = interface->isGradientDataRequired(dataID[0]);
-                outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             case FunctionID::writeBlockVectorGradientData:

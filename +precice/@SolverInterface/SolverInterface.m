@@ -72,48 +72,21 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(21));
         end
         
-        % isReadDataAvailable
-        function bool = isReadDataAvailable(obj)
-            bool = preciceGateway(uint8(22));
-        end
-        
-        % isWriteDataRequired
-        function bool = isWriteDataRequired(obj,dt)
-            bool = preciceGateway(uint8(23),dt);
-        end
-        
         % isTimeWindowComplete
         function bool = isTimeWindowComplete(obj)
             bool = preciceGateway(uint8(24));
         end
         
-        % hasToEvaluateSurrogateModel
-        function bool = hasToEvaluateSurrogateModel(obj)
-            bool = preciceGateway(uint8(25));
+        % isReadDataAvailable
+        function bool = requiresReadingCheckpoint(obj)
+            bool = preciceGateway(uint8(22));
         end
         
-        % hasToEvaluateFineModel
-        function bool = hasToEvaluateFineModel(obj)
-            bool = preciceGateway(uint8(26));
+        % isWriteDataRequired
+        function bool = requiresWritingCheckpoint(obj)
+            bool = preciceGateway(uint8(23));
         end
 
-        %% Action Methods
-        % isActionRequired
-        function bool = isActionRequired(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            bool = preciceGateway(uint8(30),action);
-        end
-        
-        % markActionFulfilled
-        function markActionFulfilled(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            preciceGateway(uint8(31),action);
-        end
-        
         %% Mesh Access
         % hasMesh
         function bool = hasMesh(obj,meshName)
@@ -122,20 +95,20 @@ classdef SolverInterface < handle
             end
             bool = preciceGateway(uint8(40),meshName);
         end
-        
-        % getMeshID
-        function id = getMeshID(obj,meshName)
-            if ischar(meshName)
-                meshName = string(meshName);
-            end
-            id = preciceGateway(uint8(41),meshName);
-        end
-
-        % getMeshHandle not yet implemented
-        
         % setMeshVertex
         function vertexId = setMeshVertex(obj,meshID,position)
             vertexId = preciceGateway(uint8(44),int32(meshID),position);
+        end
+
+        % requiresGradientDataFor
+        function bool = requiresGradientDataFor(obj,meshName,dataName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            bool = preciceGateway(uint8(25),meshName,dataName);
         end
         
         % getMeshVertexSize
@@ -150,42 +123,44 @@ classdef SolverInterface < handle
             vertexIds = preciceGateway(uint8(46),int32(meshID),int32(inSize),positions);
         end
         
-        % getMeshVertices
-        function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = length(vertexIds);
-            positions = preciceGateway(uint8(47),int32(meshID),int32(inSize),vertexIds);
-        end
-        
-        % getMeshVertexIDsFromPositions
-        function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
-            obj.checkDimensions(size(positions, 1), obj.getDimensions())
-            inSize = size(positions, 2);
-            vertexIds = preciceGateway(uint8(48),int32(meshID),int32(inSize),positions);
-        end
-        
         % setMeshEdge
         function edgeID = setMeshEdge(obj, meshID, firstVertexID, secondVertexID)
             edgeID = preciceGateway(uint8(49),int32(meshID),int32(firstVertexID),int32(secondVertexID));
         end
-        
+
+        % setMeshEdges
+        function edgeIDs = setMeshEdges(obj, meshID, vertices)
+            edgeIDs = preciceGateway(uint8(51),int32(meshID),vetices)
+        end
+
         % setMeshTriangle
-        function setMeshTriangle(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID)
-            preciceGateway(uint8(50),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID));
+        function setMeshTriangle(obj, meshID, firstVertexId, secondVertexId, thirdVertexId)
+            preciceGateway(uint8(50),int32(meshID),int32(firstVertexId),int32(secondVertexId),int32(thirdVertexId));
         end
         
-        % setMeshTriangleWithEdges
-        function setMeshTriangleWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID)
-            preciceGateway(uint8(51),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
+        % setMeshTriangles
+        function setMeshTriangles(obj, meshID, vertices)
+            preciceGateway(uint8(54),int32(meshID),vertices)
         end
         
         % setMeshQuad
-        function setMeshQuad(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID, fourthEdgeID)
-            preciceGateway(uint8(52),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID),int32(fourthEdgeID));
+        function setMeshQuad(obj, meshID, firstVertexId, secondVertexId, thirdVertexId, fourthVertexId)
+            preciceGateway(uint8(52),int32(meshID),int32(firstVertexId),int32(secondVertexId),int32(thirdVertexId),int32(fourthVertexId));
+        end
+
+        % setMeshQuads
+        function setMeshQuads(obj, meshID, vertices)
+            preciceGateway(uint8(57),int32(meshID),vertices)
+        end
+
+        % setMeshTetrahedron
+        function setMeshTetrahedron(obj, meshID, firstVertexId, secondVertexId, thirdVertexId, fourthVertexId)
+            preciceGateway(uint8(53),int32(meshID),int32(firstVertexId),int32(secondVertexId),int32(thirdVertexId),int32(fourthVertexId));
         end
         
-        % setMeshQuadWithEdges
-        function setMeshQuadWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
-            preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+        % setMeshTetrahedra
+        function setMeshTetrahedra(obj, meshID, vertices)
+            preciceGateway(uint8(58),int32(meshID),vertices)
         end
         
         % setMeshAccessRegion - EXPERIMENTAL
@@ -199,11 +174,6 @@ classdef SolverInterface < handle
             [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
         end
 
-        % isMeshConnectivityRequired
-        function bool = isMeshConnectivityRequired(meshID)
-            bool = preciceGateway(uint8(54),int32(meshID))
-        end
-        
         %% Data Access
         % hasDataID
         function bool = hasData(obj,dataName,meshID)
@@ -211,14 +181,6 @@ classdef SolverInterface < handle
                 dataName = string(dataName);
             end
             bool = preciceGateway(uint8(60),dataName,int32(meshID));
-        end
-        
-        % getDataID
-        function id = getDataID(obj,dataName,meshID)
-            if ischar(dataName)
-                dataName = string(dataName);
-            end
-            id = preciceGateway(uint8(61),dataName,int32(meshID));
         end
         
         % mapReadDataTo
@@ -295,11 +257,6 @@ classdef SolverInterface < handle
         % readScalarData
         function value = readScalarData(obj,dataID,valueIndex)
             value = preciceGateway(uint8(71),int32(dataID),int32(valueIndex));
-        end
-
-        % isGradientDataRequired
-        function bool = isGradientDataRequired(obj, dataID)
-            bool = preciceGateway(uint8(72), int32(dataID));
         end
 
         % writeBlockVectorGradientData
