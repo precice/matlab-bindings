@@ -14,57 +14,47 @@ enum class FunctionID {
     _destructor_ = 1,
     
     initialize = 10,
-    initializeData = 11,
-    advance = 12,
-    finalize = 13,
+    advance = 11,
+    finalize = 12,
     
     getDimensions = 20,
     isCouplingOngoing = 21,
-    isReadDataAvailable = 22,
-    isWriteDataRequired = 23,
-    isTimeWindowComplete = 24,
-    hasToEvaluateSurrogateModel = 25,
-    hasToEvaluateFineModel = 26,
-    getVersionInformation = 27,
-    
-    isActionRequired = 30,
-    markActionFulfilled = 31,
+    isTimeWindowComplete = 22,
+    requiresInitialData = 23,
+    requiresReadingCheckpoint = 24,
+    requiresWritingCheckpoint = 25,
+    getVersionInformation = 26,
     
     hasMesh = 40,
-    getMeshID = 41,
-    getMeshHandle = 43,
-    setMeshVertex = 44,
-    getMeshVertexSize = 45,
-    setMeshVertices = 46,
-    getMeshVertices = 47,
-    getMeshVertexIDsFromPositions = 48,
-    setMeshEdge = 49,
-    setMeshTriangle = 50,
-    setMeshTriangleWithEdges = 51,
-    setMeshQuad = 52,
-    setMeshQuadWithEdges = 53,
-    isMeshConnectivityRequired = 54,
-    setMeshAccessRegion = 55,
-    getMeshVerticesAndIDs = 56,
+    requiresMeshConnectivityFor = 41,
+    requiresGradientDataFor = 42,
+    setMeshVertex = 43,
+    getMeshVertexSize = 44,
+    setMeshVertices = 45,
+    setMeshEdge = 46,
+    setMeshEdges = 47,
+    setMeshTriangle = 48,
+    setMeshTriangles = 49,
+    setMeshQuad = 50,
+    setMeshQuads = 51,
+    setMeshTetrahedron = 52,
+    setMeshTetrahedra = 53,
+    setMeshAccessRegion = 54,
+    getMeshVerticesAndIDs = 55,
     
     hasData = 60,
-    getDataID = 61,
-    mapReadDataTo = 62,
-    mapWriteDataFrom = 63,
-    writeBlockVectorData = 64,
-    writeVectorData = 65,
-    writeBlockScalarData = 66,
-    writeScalarData = 67,
-    readBlockVectorData = 68,
-    readVectorData = 69,
-    readBlockScalarData = 70,
-    readScalarData = 71,
-
-    isGradientDataRequired = 72,
-    writeBlockVectorGradientData = 73,
-    writeVectorGradientData = 74,
-    writeBlockScalarGradientData = 75,
-    writeScalarGradientData = 76,
+    writeBlockVectorData = 61,
+    writeVectorData = 62,
+    writeBlockScalarData = 63,
+    writeScalarData = 64,
+    readBlockVectorData = 65,
+    readVectorData = 66,
+    readBlockScalarData = 67,
+    readScalarData = 68,
+    writeBlockVectorGradientData = 69,
+    writeVectorGradientData = 70,
+    writeBlockScalarGradientData = 71,
+    writeScalarGradientData = 72,
 };
 
 class MexFunction: public matlab::mex::Function {
@@ -124,11 +114,6 @@ public:
             {
                 double dt = interface->initialize();
                 outputs[0] = factory.createArray<double>({1,1}, {dt});
-                break;
-            }
-            case FunctionID::initializeData: //initializeData
-            {
-                interface->initializeData();
                 break;
             }
             case FunctionID::advance:
@@ -265,13 +250,13 @@ public:
             {
                 const StringArray meshName = inputs[1];
                 const StringArray dataName = inputs[2];
-                bool output = interface->hasData(dataName[0],meshName[0]);
+                bool output = interface->hasData(meshName[0],dataName[0]);
                 outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             case FunctionID::mapWriteDataFrom:
             {
-                const TypedArray<int32_t> fromMeshID = inputs[1];
+                const TypedArray<int32_t> fromMeshName = inputs[1];
                 interface->mapWriteDataFrom(fromMeshName[0]);
                 break;
             }
@@ -282,7 +267,7 @@ public:
                 const TypedArray<int32_t> size = inputs[3];
                 const TypedArray<int32_t> vertexIDs = inputs[4];
                 const TypedArray<double> values = inputs[5];
-                interface->writeBlockVectorData(dataID[0],size[0],&*vertexIDs.begin(),&*values.begin());
+                interface->writeBlockVectorData(meshName,dataName,size[0],&*vertexIDs.begin(),&*values.begin());
                 break;
             }
             case FunctionID::writeVectorData:
@@ -291,7 +276,7 @@ public:
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> valueIndex = inputs[3];
                 const TypedArray<double> value = inputs[4];
-                interface->writeVectorData(dataID[0],valueIndex[0],&*value.begin());
+                interface->writeVectorData(meshName,dataName,valueIndex[0],&*value.begin());
                 break;
             }
             case FunctionID::writeBlockScalarData:
@@ -301,7 +286,7 @@ public:
                 const TypedArray<int32_t> size = inputs[3];
                 const TypedArray<int32_t> vertexIDs = inputs[4];
                 const TypedArray<double> values = inputs[5];
-                interface->writeBlockScalarData(dataID[0],size[0],&*vertexIDs.begin(),&*values.begin());
+                interface->writeBlockScalarData(meshName,dataName,size[0],&*vertexIDs.begin(),&*values.begin());
                 break;
             }
             case FunctionID::writeScalarData:
@@ -310,7 +295,7 @@ public:
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> valueIndex = inputs[3];
                 const TypedArray<double> value = inputs[4];
-                interface->writeScalarData(dataID[0],valueIndex[0],value[0]);
+                interface->writeScalarData(meshName,dataName,valueIndex[0],value[0]);
                 break;
             }
             case FunctionID::readBlockVectorData:
@@ -322,7 +307,7 @@ public:
                 int32_t dim = interface->getDimensions();
                 buffer_ptr_t<double> values_ptr = factory.createBuffer<double>(size[0]*dim);
                 double* values = values_ptr.get();
-                interface->readBlockVectorData(dataID[0],size[0],&*vertexIDs.begin(),values);
+                interface->readBlockVectorData(meshName,dataName,size[0],&*vertexIDs.begin(),values);
                 outputs[0] = factory.createArrayFromBuffer<double>({dim,size[0]}, std::move(values_ptr));
                 break;
             }
@@ -334,18 +319,18 @@ public:
                 int32_t dim = interface->getDimensions();
                 buffer_ptr_t<double> value_ptr = factory.createBuffer<double>(dim);
                 double* value = value_ptr.get();
-                interface->readVectorData(dataID[0],valueIndex[0],value);
+                interface->readVectorData(meshName,dataName,valueIndex[0],value);
                 outputs[0] = factory.createArrayFromBuffer<double>({dim,1}, std::move(value_ptr));
                 break;
             }
             case FunctionID::readBlockScalarData:
             {
-                const StringArray meshName = std::move(inputs[1]);
+                const StringArray meshName = inputs[1];
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> size = std::move(inputs[3]);
                 const TypedArray<int32_t> valueIndices = std::move(inputs[4]);
                 const TypedArray<bool> transpose = std::move(inputs[5]);
-                int32_t sizeA, sizeB;
+                size_t sizeA, sizeB;
                 if (transpose[0]) {
                     sizeA = size[0];
                     sizeB = 1;
@@ -356,7 +341,7 @@ public:
                 }
                 buffer_ptr_t<double> values_ptr = factory.createBuffer<double>(size[0]);
                 double* values = values_ptr.get();
-                interface->readBlockScalarData(dataID[0],size[0],&*valueIndices.begin(),values);
+                interface->readBlockScalarData(meshName,dataName,size[0],&*valueIndices.begin(),values);
                 outputs[0] = factory.createArrayFromBuffer<double>({sizeA,sizeB}, std::move(values_ptr));
                 break;
             }
@@ -366,7 +351,7 @@ public:
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> valueIndex = inputs[3];
                 double value;
-                interface->readScalarData(dataID[0],valueIndex[0],value);
+                interface->readScalarData(meshName,dataName,valueIndex[0],value);
                 outputs[0] = factory.createScalar<double>(value);
                 break;
             }
@@ -377,7 +362,7 @@ public:
                 const TypedArray<int32_t> size = inputs[3];
                 const TypedArray<int32_t> vertexIDs = inputs[4];
                 const TypedArray<double> gradientValues = inputs[5];
-                interface->writeBlockVectorGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
+                interface->writeBlockVectorGradientData(meshName,dataName, size[0], &*vertexIDs.begin(), &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeScalarGradientData:
@@ -386,7 +371,7 @@ public:
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> vertexID = inputs[3];
                 const TypedArray<double> gradientValues = inputs[4];
-                interface->writeScalarGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
+                interface->writeScalarGradientData(meshName,dataName, vertexID[0], &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeVectorGradientData:
@@ -395,7 +380,7 @@ public:
                 const StringArray dataName = inputs[2];
                 const TypedArray<int32_t> vertexID = inputs[3];
                 const TypedArray<double> gradientValues = inputs[4];
-                interface->writeVectorGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
+                interface->writeVectorGradientData(meshName,dataName, vertexID[0], &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeBlockScalarGradientData:
@@ -405,7 +390,7 @@ public:
                 const TypedArray<int32_t> size = inputs[3];
                 const TypedArray<int32_t> vertexIDs = inputs[4];
                 const TypedArray<double> gradientValues = inputs[5];
-                interface->writeBlockScalarGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
+                interface->writeBlockScalarGradientData(meshName,dataName, size[0], &*vertexIDs.begin(), &*gradientValues.begin());
                 break;
             }
             default:

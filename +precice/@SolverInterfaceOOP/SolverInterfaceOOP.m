@@ -57,19 +57,14 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             dt = feval(obj.oMexHost,"preciceGateway",uint8(10));
         end
         
-        % initialize Data
-        function initializeData(obj)
-            feval(obj.oMexHost,"preciceGateway",uint8(11));
-        end
-        
         % advance
         function dt = advance(obj,dt)
-            dt = feval(obj.oMexHost,"preciceGateway",uint8(12),dt);
+            dt = feval(obj.oMexHost,"preciceGateway",uint8(11),dt);
         end
         
         % finalize
         function finalize(obj)
-            feval(obj.oMexHost,"preciceGateway",uint8(13));
+            feval(obj.oMexHost,"preciceGateway",uint8(12));
         end
         
         %% Status queries
@@ -84,30 +79,30 @@ classdef SolverInterfaceOOP < precice.SolverInterface
         end
         
         % isTimestepComplete
-        function bool = isTimestepComplete(obj)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(24));
+        function bool = isTimeWindowComplete(obj)
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(22));
         end
-        
+
         % requiresInitialData
         function bool = requiresInitialData(obj)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(25));
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(23));
         end
 
         % requiresReadingCheckpoint
         function bool = requiresReadingCheckpoint(obj)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(26));
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(24));
         end
 
         % requiresWritingCheckpoint
         function bool = requiresWritingCheckpoint(obj)
-            bool = feval(obj.oMexHost,"preciceGateway",uint8(27));
+            bool = feval(obj.oMexHost,"preciceGateway",uint8(25));
         end
 
         % getVersionInformation
         function s = getVersionInformation(obj)
-            s = feval(obj.oMexHost,"preciceGateway",uint8(27));
+            s = feval(obj.oMexHost,"preciceGateway",uint8(26));
         end
-        
+
         %% Mesh Access
         % hasMesh
         function bool = hasMesh(obj,meshName)
@@ -124,7 +119,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             end
             bool = feval(obj.oMexHost,"preciceGateway",uint8(41),meshName);
         end
-        
+
         % requiresGradientDataFor
         function bool = requiresGradientDataFor(obj,meshName,dataName)
             if ischar(meshName)
@@ -135,31 +130,31 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             end
             bool = feval(obj.oMexHost,"preciceGateway",uint8(42),meshName,dataName);
         end
-
+        
         % setMeshVertex
         function vertexId = setMeshVertex(obj,meshName,position)
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            vertexId = feval(obj.oMexHost,"preciceGateway",uint8(44),meshName,position);
+            vertexId = feval(obj.oMexHost,"preciceGateway",uint8(43),meshName,position);
         end
-        
+
         % getMeshVertexSize
         function vertexId = getMeshVertexSize(obj,meshName)
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            vertexId = feval(obj.oMexHost,"preciceGateway",uint8(45),meshName);
+            vertexId = feval(obj.oMexHost,"preciceGateway",uint8(44),meshName);
         end
         
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshName,positions)
-            obj.checkDimensions(size(positions, 1), obj.getDimensions())
-            inSize = size(positions,2);
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(46),meshName,int32(inSize),positions);
+            obj.checkDimensions(size(positions, 1), obj.getDimensions())
+            inSize = size(positions,2);
+            vertexIds = feval(obj.oMexHost,"preciceGateway",uint8(45),meshName,int32(inSize),positions);
         end
         
         % setMeshEdge
@@ -167,25 +162,25 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            edgeID = feval(obj.oMexHost,"preciceGateway",uint8(49),meshName,int32(firstVertexID),int32(secondVertexID));
+            edgeID = feval(obj.oMexHost,"preciceGateway",uint8(46),meshName,int32(firstVertexID),int32(secondVertexID));
         end
 
         % setMeshEdges
         function edgeIDs = setMeshEdges(obj, meshName, vertices)
+            if ischar(meshName)
+                meshName = string(meshName)
+            end
             obj.checkDimensions(size(vertices,1), 2)
             inSize = size(vertices,2);
-            if ischar(meshName)
-                meshName = string(meshName)
-            end
-            edgeIDs = feval(obj.oMexHost,"preciceGateway",uint8(51),meshName,int32(inSize),vertices);
+            edgeIDs = feval(obj.oMexHost,"preciceGateway",uint8(47),meshName,int32(inSize),vertices);
         end
-        
+
         % setMeshTriangle
-        function setMeshTriangle(obj, meshName, firstEdgeID, secondEdgeID, thirdEdgeID)
+        function setMeshTriangle(obj, meshName, firstVertexID, secondVertexID, thirdVertexID)
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(50),meshName,int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID));
+            feval(obj.oMexHost,"preciceGateway",uint8(48),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
         end
 
         % setMeshTriangles
@@ -195,25 +190,25 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(53),meshName,int32(inSize),vertices);
+            feval(obj.oMexHost,"preciceGateway",uint8(49),meshName,int32(inSize),vertices);
         end
         
         % setMeshQuad
-        function setMeshQuad(obj, meshName, firstEdgeID, secondEdgeID, thirdEdgeID, fourthEdgeID)
+        function setMeshQuad(obj, meshName, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(52),meshName,int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID),int32(fourthEdgeID));
+            feval(obj.oMexHost,"preciceGateway",uint8(50),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
 
         % setMeshQuads
         function setMeshQuads(obj, meshName, vertices)
-            obj.checkDimensions(size(vertices,1), 4)
-            inSize = size(vertices,2);
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(54),meshName,int32(inSize),edges);
+            obj.checkDimensions(size(vertices,1), 4)
+            inSize = size(vertices,2);
+            feval(obj.oMexHost,"preciceGateway",uint8(51),meshName,int32(inSize),edges);
         end
 
         % setMeshTetrahedron
@@ -221,7 +216,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(55),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+            feval(obj.oMexHost,"preciceGateway",uint8(52),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
 
         % setMeshTetrahedra
@@ -231,52 +226,36 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(56),meshName,int32(inSize),vertices);
+            feval(obj.oMexHost,"preciceGateway",uint8(53),meshName,int32(inSize),vertices);
         end
         
-        % setMeshAccessRegion - EXPERIMENTAL
+        % setMeshAccessRegion
         function setMeshAccessRegion(meshName, boundingBox)
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            preciceGateway(uint8(55),meshName,boundingBox)
+            feval(obj.oMexHost,"preciceGateway",uint8(54),meshName,boundingBox);
         end
 
-        % getMeshVerticesAndIDs - EXPERIMENTAL
+        % getMeshVerticesAndIDs
         function [vertices, outIDs] = getMeshVerticesAndIDs(meshName)
-            inSize = getMeshVertexSize(meshName);
             if ischar(meshName)
                 meshName = string(meshName)
             end
-            [vertices,outIDs] = preciceGateway(uint8(56),meshName,int32(inSize));
+            inSize = getMeshVertexSize(meshName);
+            [vertices,outIDs] = feval(obj.oMexHost,"preciceGateway",uint8(55),meshName,int32(inSize));
         end
-        
+
         %% Data Access
         % hasData
         function bool = hasData(obj,meshName,dataName)
+            if ischar(meshName)
+                meshName = string(meshName)
+            end
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            if ischar(meshName)
-                meshName = string(meshName)
-            end
             bool = feval(obj.oMexHost,"preciceGateway",uint8(60),dataName,meshName);
-        end
-        
-        % mapReadDataTo
-        function mapReadDataTo(obj,meshName)
-            if ischar(meshName)
-                meshName = string(meshName)
-            end
-            feval(obj.oMexHost,"preciceGateway",uint8(62),meshName);
-        end
-        
-        % mapWriteDataFrom
-        function mapWriteDataFrom(obj,meshName)
-            if ischar(meshName)
-                meshName = string(meshName)
-            end
-            feval(obj.oMexHost,"preciceGateway",uint8(63),meshName);
         end
         
         % writeBlockVectorData
@@ -285,16 +264,17 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = length(valueIndices);
-            obj.checkDimensions(size(values, 2), inSize)
-            obj.checkDimensions(size(values, 1), obj.getDimensions())
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(64),meshName,dataName,int32(inSize),valueIndices,values);
+
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(values, 2), inSize)
+            obj.checkDimensions(size(values, 1), obj.getDimensions())
+            feval(obj.oMexHost,"preciceGateway",uint8(61),meshName,dataName,int32(inSize),valueIndices,values);
         end
         
         % writeVectorData
@@ -305,7 +285,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(65),meshName,dataName,int32(valueIndex),value);
+            feval(obj.oMexHost,"preciceGateway",uint8(62),meshName,dataName,int32(valueIndex),value);
         end
         
         % writeBlockScalarData
@@ -314,15 +294,15 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = length(valueIndices);
-            assert(inSize == length(values), 'valueIndices and values should must have the same length');
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(66),meshName,dataName,int32(inSize),valueIndices,values);
+            inSize = length(valueIndices);
+            assert(inSize == length(values), 'valueIndices and values should must have the same length');
+            feval(obj.oMexHost,"preciceGateway",uint8(63),meshName,dataName,int32(inSize),valueIndices,values);
         end
         
         % writeScalarData
@@ -333,7 +313,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(67),meshName,dataName,int32(valueIndex),value);
+            feval(obj.oMexHost,"preciceGateway",uint8(64),meshName,dataName,int32(valueIndex),value);
         end
         
         % readBlockVectorData
@@ -342,14 +322,14 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = length(valueIndices);
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            values = feval(obj.oMexHost,"preciceGateway",uint8(68),meshName,dataName,int32(inSize),valueIndices);
+            inSize = length(valueIndices);
+            values = feval(obj.oMexHost,"preciceGateway",uint8(65),meshName,dataName,int32(inSize),valueIndices);
         end
         
         % readVectorData
@@ -360,7 +340,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            value = feval(obj.oMexHost,"preciceGateway",uint8(69),meshName,dataName,int32(valueIndex));
+            value = feval(obj.oMexHost,"preciceGateway",uint8(66),meshName,dataName,int32(valueIndex));
         end
         
         % readBlockScalarData
@@ -372,14 +352,14 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-            inSize = length(valueIndices);
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            values = feval(obj.oMexHost,"preciceGateway",uint8(70),meshName,dataName,int32(inSize),valueIndices,transpose);
+            inSize = length(valueIndices);
+            values = feval(obj.oMexHost,"preciceGateway",uint8(67),meshName,dataName,int32(inSize),valueIndices,transpose);
         end
         
         % readScalarData
@@ -390,7 +370,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            value = feval(obj.oMexHost,"preciceGateway",uint8(71),meshName,dataName,int32(valueIndex));
+            value = feval(obj.oMexHost,"preciceGateway",uint8(68),meshName,dataName,int32(valueIndex));
         end
 
         %% Data Access
@@ -400,17 +380,16 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-
-            inSize = length(valueIndices);
-            obj.checkDimensions(size(gradientValues, 2), inSize)
-            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost, "preciceGateway", uint8(73), meshName,dataName, int32(inSize), valueIndices, gradientValues);
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(gradientValues, 2), inSize)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
+            feval(obj.oMexHost, "preciceGateway", uint8(69), meshName,dataName, int32(inSize), valueIndices, gradientValues);
         end
 
         % writeVectorGradientData
@@ -422,7 +401,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost, "preciceGateway", uint8(74), meshName,dataName, int32(valueIndex), gradientValues);
+            feval(obj.oMexHost, "preciceGateway", uint8(70), meshName,dataName, int32(valueIndex), gradientValues);
         end
 
         % writeBlockScalarGradientData
@@ -432,17 +411,17 @@ classdef SolverInterfaceOOP < precice.SolverInterface
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-
-            inSize = length(valueIndices);
-            obj.checkDimensions(size(gradientValues, 2), inSize)
-            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
             if ischar(meshName)
                 meshName = string(meshName)
             end
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost, "preciceGateway", uint8(75), meshName,dataName, int32(inSize), valueIndices, gradientValues);
+
+            inSize = length(valueIndices);
+            obj.checkDimensions(size(gradientValues, 2), inSize)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
+            feval(obj.oMexHost, "preciceGateway", uint8(71), meshName,dataName, int32(inSize), valueIndices, gradientValues);
         end
 
         % writeScalarGradientData
@@ -454,7 +433,7 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             if ischar(dataName)
                 dataName = string(dataName)
             end
-            feval(obj.oMexHost, "preciceGateway", uint8(76), meshName,dataName, int32(valueIndex), gradientValues);
+            feval(obj.oMexHost, "preciceGateway", uint8(72), meshName,dataName, int32(valueIndex), gradientValues);
         end
 
         %% Helper functions
