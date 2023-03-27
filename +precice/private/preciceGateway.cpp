@@ -2,7 +2,7 @@
 #include "mex.hpp"
 #include "mexAdapter.hpp"
 #include <iostream>
-#include "precice/SolverInterface.hpp"
+#include "precice/Tooling.hpp"
 
 using namespace matlab::data;
 using matlab::mex::ArgumentList;

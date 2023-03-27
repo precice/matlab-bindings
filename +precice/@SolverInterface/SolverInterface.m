@@ -87,11 +87,6 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(25));
         end
 
-        % getVersionInformation
-        function s = getVersionInformation(obj)
-            s = preciceGateway(uint8(26));
-        end
-
         %% Mesh Access
         % hasMesh
         function bool = hasMesh(obj,meshName)

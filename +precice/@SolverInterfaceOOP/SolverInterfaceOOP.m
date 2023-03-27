@@ -98,11 +98,6 @@ classdef SolverInterfaceOOP < precice.SolverInterface
             bool = feval(obj.oMexHost,"preciceGateway",uint8(25));
         end
 
-        % getVersionInformation
-        function s = getVersionInformation(obj)
-            s = feval(obj.oMexHost,"preciceGateway",uint8(26));
-        end
-
         %% Mesh Access
         % hasMesh
         function bool = hasMesh(obj,meshName)
