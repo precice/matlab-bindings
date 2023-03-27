@@ -3,6 +3,7 @@
 #include "mexAdapter.hpp"
 #include <iostream>
 #include <sstream>
+#include <string_view>
 #include "precice/SolverInterface.hpp"
 
 using namespace matlab::data;
