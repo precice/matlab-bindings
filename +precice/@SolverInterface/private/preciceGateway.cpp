@@ -8,7 +8,6 @@
 using namespace matlab::data;
 using matlab::mex::ArgumentList;
 using namespace precice;
-using namespace precice::constants;
 
 enum class FunctionID {
     _constructor_ = 0,
@@ -190,131 +189,136 @@ public:
             }            
             case FunctionID::setMeshVertex:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<double> position = inputs[2];
-                int id = interface->setMeshVertex(meshID[0],&*position.begin());
+                int id = interface->setMeshVertex(meshName[0],&*position.begin());
                 outputs[0] = factory.createScalar<int32_t>(id);
                 break;
             }
             case FunctionID::getMeshVertexSize:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
-                int size = interface->getMeshVertexSize(meshID[0]);
+                const StringArray meshName = inputs[1];
+                int size = interface->getMeshVertexSize(meshName[0]);
                 outputs[0] = factory.createScalar<int32_t>(size);
                 break;
             }
             case FunctionID::setMeshVertices:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<int32_t> size = inputs[2];
                 const TypedArray<double> positions = inputs[3];
                 buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
                 int32_t* ids = ids_ptr.get();
-                interface->setMeshVertices(meshID[0],size[0],&*positions.begin(),ids);
+                interface->setMeshVertices(meshName[0],size[0],&*positions.begin(),ids);
                 outputs[0] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
                 break;
             }
             case FunctionID::setMeshEdge:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<int32_t> firstVertexID = inputs[2];
                 const TypedArray<int32_t> secondVertexID = inputs[3];
-                int id = interface->setMeshEdge(meshID[0],firstVertexID[0],secondVertexID[0]);
+                int id = interface->setMeshEdge(meshName[0],firstVertexID[0],secondVertexID[0]);
                 outputs[0] = factory.createScalar<int32_t>(id);
                 break;
             }
             case FunctionID::setMeshTriangle:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<int32_t> firstEdgeID = inputs[2];
                 const TypedArray<int32_t> secondEdgeID = inputs[3];
-                const TypedArray<int32_t> thirdEdgeID = inputs[3];
-                interface->setMeshTriangle(meshID[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0]);
+                const TypedArray<int32_t> thirdEdgeID = inputs[4];
+                interface->setMeshTriangle(meshName[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0]);
                 break;
             }
             case FunctionID::setMeshQuad:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<int32_t> firstEdgeID = inputs[2];
                 const TypedArray<int32_t> secondEdgeID = inputs[3];
-                const TypedArray<int32_t> thirdEdgeID = inputs[3];
-                const TypedArray<int32_t> fourthEdgeID = inputs[4];
-                interface->setMeshQuad(meshID[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0],fourthEdgeID[0]);
+                const TypedArray<int32_t> thirdEdgeID = inputs[4];
+                const TypedArray<int32_t> fourthEdgeID = inputs[5];
+                interface->setMeshQuad(meshName[0],firstEdgeID[0],secondEdgeID[0],thirdEdgeID[0],fourthEdgeID[0]);
                 break;
             }
             case FunctionID::setMeshAccessRegion:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<double> boundingBox = inputs[2];
-                interface->setMeshAccessRegion(meshID[0],&*boundingBox.begin());
+                interface->setMeshAccessRegion(meshName[0],&*boundingBox.begin());
                 break;
             }
             case FunctionID::getMeshVerticesAndIDs:
             {
-                const TypedArray<int32_t> meshID = inputs[1];
+                const StringArray meshName = inputs[1];
                 const TypedArray<int32_t> size = inputs[2];
                 buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
                 int32_t* ids = ids_ptr.get();
                 buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
                 double* positions = positions_ptr.get();
-                interface->getMeshVertices(meshID[0],size[0],ids,positions);
+                interface->getMeshVertices(meshName[0],size[0],ids,positions);
                 outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
                 outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
                 break;
             } 
             case FunctionID::hasData:
             {
-                const StringArray dataName = inputs[1];
-                const TypedArray<int32_t> meshID = inputs[2];
-                bool output = interface->hasData(dataName[0],meshID[0]);
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                bool output = interface->hasData(dataName[0],meshName[0]);
                 outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             case FunctionID::mapWriteDataFrom:
             {
                 const TypedArray<int32_t> fromMeshID = inputs[1];
-                interface->mapWriteDataFrom(fromMeshID[0]);
+                interface->mapWriteDataFrom(fromMeshName[0]);
                 break;
             }
             case FunctionID::writeBlockVectorData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertexIDs = inputs[3];
-                const TypedArray<double> values = inputs[4];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = inputs[3];
+                const TypedArray<int32_t> vertexIDs = inputs[4];
+                const TypedArray<double> values = inputs[5];
                 interface->writeBlockVectorData(dataID[0],size[0],&*vertexIDs.begin(),&*values.begin());
                 break;
             }
             case FunctionID::writeVectorData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> valueIndex = inputs[2];
-                const TypedArray<double> value = inputs[3];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> valueIndex = inputs[3];
+                const TypedArray<double> value = inputs[4];
                 interface->writeVectorData(dataID[0],valueIndex[0],&*value.begin());
                 break;
             }
             case FunctionID::writeBlockScalarData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertexIDs = inputs[3];
-                const TypedArray<double> values = inputs[4];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = inputs[3];
+                const TypedArray<int32_t> vertexIDs = inputs[4];
+                const TypedArray<double> values = inputs[5];
                 interface->writeBlockScalarData(dataID[0],size[0],&*vertexIDs.begin(),&*values.begin());
                 break;
             }
             case FunctionID::writeScalarData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> valueIndex = inputs[2];
-                const TypedArray<double> value = inputs[3];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> valueIndex = inputs[3];
+                const TypedArray<double> value = inputs[4];
                 interface->writeScalarData(dataID[0],valueIndex[0],value[0]);
                 break;
             }
             case FunctionID::readBlockVectorData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertexIDs = inputs[3];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = inputs[3];
+                const TypedArray<int32_t> vertexIDs = inputs[4];
                 int32_t dim = interface->getDimensions();
                 buffer_ptr_t<double> values_ptr = factory.createBuffer<double>(size[0]*dim);
                 double* values = values_ptr.get();
@@ -324,8 +328,9 @@ public:
             }
             case FunctionID::readVectorData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> valueIndex = inputs[2];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> valueIndex = inputs[3];
                 int32_t dim = interface->getDimensions();
                 buffer_ptr_t<double> value_ptr = factory.createBuffer<double>(dim);
                 double* value = value_ptr.get();
@@ -335,10 +340,11 @@ public:
             }
             case FunctionID::readBlockScalarData:
             {
-                const TypedArray<int32_t> dataID = std::move(inputs[1]);
-                const TypedArray<int32_t> size = std::move(inputs[2]);
-                const TypedArray<int32_t> valueIndices = std::move(inputs[3]);
-                const TypedArray<bool> transpose = std::move(inputs[4]);
+                const StringArray meshName = std::move(inputs[1]);
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = std::move(inputs[3]);
+                const TypedArray<int32_t> valueIndices = std::move(inputs[4]);
+                const TypedArray<bool> transpose = std::move(inputs[5]);
                 int32_t sizeA, sizeB;
                 if (transpose[0]) {
                     sizeA = size[0];
@@ -356,8 +362,9 @@ public:
             }
             case FunctionID::readScalarData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> valueIndex = inputs[2];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> valueIndex = inputs[3];
                 double value;
                 interface->readScalarData(dataID[0],valueIndex[0],value);
                 outputs[0] = factory.createScalar<double>(value);
@@ -365,35 +372,39 @@ public:
             }
             case FunctionID::writeBlockVectorGradientData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertexIDs = inputs[3];
-                const TypedArray<double> gradientValues = inputs[4];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = inputs[3];
+                const TypedArray<int32_t> vertexIDs = inputs[4];
+                const TypedArray<double> gradientValues = inputs[5];
                 interface->writeBlockVectorGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeScalarGradientData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> vertexID = inputs[2];
-                const TypedArray<double> gradientValues = inputs[3];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> vertexID = inputs[3];
+                const TypedArray<double> gradientValues = inputs[4];
                 interface->writeScalarGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeVectorGradientData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> vertexID = inputs[2];
-                const TypedArray<double> gradientValues = inputs[3];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> vertexID = inputs[3];
+                const TypedArray<double> gradientValues = inputs[4];
                 interface->writeVectorGradientData(dataID[0], vertexID[0], &*gradientValues.begin());
                 break;
             }
             case FunctionID::writeBlockScalarGradientData:
             {
-                const TypedArray<int32_t> dataID = inputs[1];
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertexIDs = inputs[3];
-                const TypedArray<double> gradientValues = inputs[4];
+                const StringArray meshName = inputs[1];
+                const StringArray dataName = inputs[2];
+                const TypedArray<int32_t> size = inputs[3];
+                const TypedArray<int32_t> vertexIDs = inputs[4];
+                const TypedArray<double> gradientValues = inputs[5];
                 interface->writeBlockScalarGradientData(dataID[0], size[0], &*vertexIDs.begin(), &*gradientValues.begin());
                 break;
             }
