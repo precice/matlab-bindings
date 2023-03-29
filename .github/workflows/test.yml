@@ -23,7 +23,7 @@ jobs:
       - name: install precice
         uses: precice/setup-precice-action@main
         with:
-          precice-version: v2.5.0
+          precice-version: develop
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
@@ -63,7 +63,7 @@ jobs:
       - name: install precice
         uses: precice/setup-precice-action@main
         with:
-          precice-version: v2.5.0
+          precice-version: develop
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
