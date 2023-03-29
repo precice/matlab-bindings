@@ -52,6 +52,7 @@ jobs:
       matrix:
         include:
         - release: latest
+        - release: R2022b
         - release: R2022a
         - release: R2021b
         # - release: R2021a
