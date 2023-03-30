@@ -118,7 +118,7 @@ classdef SolverInterface < handle
         % setMeshVertex
         function vertexId = setMeshVertex(obj,meshName,position)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             vertexId = preciceGateway(uint8(43),meshName,position);
         end
@@ -126,7 +126,7 @@ classdef SolverInterface < handle
         % getMeshVertexSize
         function vertexId = getMeshVertexSize(obj,meshName)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             vertexId = preciceGateway(uint8(44),meshName);
         end
@@ -134,7 +134,7 @@ classdef SolverInterface < handle
         % setMeshVertices
         function vertexIds = setMeshVertices(obj,meshName,positions)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             obj.checkDimensions(size(positions, 1), obj.getDimensions())
             inSize = size(positions,2);
@@ -144,7 +144,7 @@ classdef SolverInterface < handle
         % setMeshEdge
         function edgeID = setMeshEdge(obj, meshName, firstVertexID, secondVertexID)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             edgeID = preciceGateway(uint8(46),meshName,int32(firstVertexID),int32(secondVertexID));
         end
@@ -152,7 +152,7 @@ classdef SolverInterface < handle
         % setMeshEdges
         function edgeIDs = setMeshEdges(obj, meshName, vertices)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             obj.checkDimensions(size(vertices,1), 2)
             inSize = size(vertices,2);
@@ -162,7 +162,7 @@ classdef SolverInterface < handle
         % setMeshTriangle
         function setMeshTriangle(obj, meshName, firstVertexID, secondVertexID, thirdVertexID)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(48),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
         end
@@ -172,7 +172,7 @@ classdef SolverInterface < handle
             obj.checkDimensions(size(vertices,1), 3)
             inSize = size(vertices,2);
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(49),meshName,int32(size(vertices,2)),vertices);
         end
@@ -180,7 +180,7 @@ classdef SolverInterface < handle
         % setMeshQuad
         function setMeshQuad(obj, meshName, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(50),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
@@ -188,7 +188,7 @@ classdef SolverInterface < handle
         % setMeshQuads
         function setMeshQuads(obj, meshName, vertices)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             obj.checkDimensions(size(vertices,1), 4)
             inSize = size(vertices,2);
@@ -198,7 +198,7 @@ classdef SolverInterface < handle
         % setMeshTetrahedron
         function setMeshTetrahedron(obj, meshName, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(52),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
@@ -208,7 +208,7 @@ classdef SolverInterface < handle
             obj.checkDimensions(size(vertices,1), 4)
             inSize = size(vertices,2);
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(53),meshName,int32(inSize),vertices);
         end
@@ -216,7 +216,7 @@ classdef SolverInterface < handle
         % setMeshAccessRegion
         function setMeshAccessRegion(meshName, boundingBox)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             preciceGateway(uint8(54),meshName,boundingBox)
         end
@@ -224,7 +224,7 @@ classdef SolverInterface < handle
         % getMeshVerticesAndIDs
         function [vertices, outIDs] = getMeshVerticesAndIDs(meshName)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             inSize = getMeshVertexSize(meshName);
             [vertices,outIDs] = preciceGateway(uint8(55),meshName,int32(inSize));
@@ -234,7 +234,7 @@ classdef SolverInterface < handle
         % hasData
         function bool = hasData(obj,meshName,dataName)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
                 dataName = string(dataName);
@@ -249,10 +249,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
 
             inSize = length(valueIndices);
@@ -264,10 +264,10 @@ classdef SolverInterface < handle
         % writeVectorData
         function writeVectorData(obj,meshName,dataName,valueIndex,value)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             preciceGateway(uint8(62),meshName,dataName,int32(valueIndex),value);
         end
@@ -279,10 +279,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             inSize = length(valueIndices);
             assert(inSize == length(values), 'valueIndices and values should must have the same length');
@@ -292,10 +292,10 @@ classdef SolverInterface < handle
         % writeScalarData
         function writeScalarData(obj,meshName,dataName,valueIndex,value)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             preciceGateway(uint8(64),meshName,dataName,int32(valueIndex),value);
         end
@@ -307,10 +307,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             inSize = length(valueIndices);
             values = preciceGateway(uint8(65),meshName,dataName,int32(inSize),valueIndices);
@@ -319,10 +319,10 @@ classdef SolverInterface < handle
         % readVectorData
         function value = readVectorData(obj,meshName,dataName,valueIndex)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             value = preciceGateway(uint8(66),meshName,dataName,int32(valueIndex));
         end
@@ -337,10 +337,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             inSize = length(valueIndices);
             values = preciceGateway(uint8(67),meshName,dataName,int32(inSize),valueIndices,transpose);
@@ -349,10 +349,10 @@ classdef SolverInterface < handle
         % readScalarData
         function value = readScalarData(obj,meshName,dataName,valueIndex)
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             value = preciceGateway(uint8(68),meshName,dataName,int32(valueIndex));
         end
@@ -365,10 +365,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             inSize = length(valueIndices);
             obj.checkDimensions(size(gradientValues, 2), inSize)
@@ -380,10 +380,10 @@ classdef SolverInterface < handle
         function writeVectorGradientData(obj, meshName, dataName, valueIndex, gradientValues)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             preciceGateway(uint8(70), meshName, dataName, int32(valueIndex), gradientValues);
         end
@@ -396,10 +396,10 @@ classdef SolverInterface < handle
                 valueIndices = int32(valueIndices);
             end
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
 
             inSize = length(valueIndices);
@@ -412,10 +412,10 @@ classdef SolverInterface < handle
         function writeScalarGradientData(obj, meshName, dataName, valueIndex, gradientValues)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
             if ischar(meshName)
-                meshName = string(meshName)
+                meshName = string(meshName);
             end
             if ischar(dataName)
-                dataName = string(dataName)
+                dataName = string(dataName);
             end
             preciceGateway(uint8(72), meshName, dataName, int32(valueIndex), gradientValues);
         end

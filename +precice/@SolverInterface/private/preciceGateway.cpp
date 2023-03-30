@@ -197,7 +197,7 @@ public:
             case FunctionID::setMeshVertices:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<size_t> size = inputs[2];
+                const TypedArray<int32_t> size = inputs[2];
                 const TypedArray<double> positions = inputs[3];
                 buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
                 int32_t* ids = ids_ptr.get();
@@ -243,7 +243,7 @@ public:
             case FunctionID::getMeshVerticesAndIDs:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<size_t> size = inputs[2];
+                const TypedArray<int32_t> size = inputs[2];
                 buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
                 int32_t* ids = ids_ptr.get();
                 buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
@@ -303,7 +303,7 @@ public:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
-                const TypedArray<size_t> size = inputs[3];
+                const TypedArray<int32_t> size = inputs[3];
                 const TypedArray<int32_t> vertexIDs = inputs[4];
                 size_t dim = interface->getDimensions();
                 buffer_ptr_t<double> values_ptr = factory.createBuffer<double>(size[0]*dim);

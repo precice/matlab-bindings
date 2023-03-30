@@ -49,8 +49,6 @@ function solverdummy(configFileName,participantName)
     end
     
     vertexIDs = interface.setMeshVertices(meshName, vertices);
-    readDataID = interface.getDataID(readDataName, meshName);
-    writeDataID = interface.getDataID(writeDataName, meshName);
     
     dt = interface.initialize();
     
@@ -59,11 +57,11 @@ function solverdummy(configFileName,participantName)
             disp('DUMMY: Writing iteration checkpoint.')
         end
         
-        readData = interface.readBlockVectorData(readDataID, vertexIDs);
+        readData = interface.readBlockVectorData(meshName, readDataName, vertexIDs);
         
         writeData = readData + 1;
         
-        interface.writeBlockVectorData(writeDataID, vertexIDs, writeData);
+        interface.writeBlockVectorData(meshName, writeDataName, vertexIDs, writeData);
         
         dt = interface.advance(dt);
         
