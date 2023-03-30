@@ -2,15 +2,14 @@ clear; close all; clc;
 
 % Initialize and configure preCICE
 interface = precice.SolverInterface("SolverU", "precice-config.xml", 0, 1);
-cowid = precice.constants.actionWriteInitialData(); % Required for data initialization
 
 % Geometry IDs. As it is a 0-D simulation, only one vertex is necessary.
-meshID = interface.getMeshID("MeshU");
-vertex_ID = interface.setMeshVertex(meshID, [0 0]);
+meshName = "MeshU";
+vertex_ID = interface.setMeshVertex(meshName, [0 0]);
 
 % Data IDs
-I_ID = interface.getDataID("I", meshID);
-U_ID = interface.getDataID("U", meshID);
+DataNameI = "I";
+DataNameU = "U";
 
 % Simulation parameters and initial condition
 C = 2;                      % Capacitance
@@ -27,12 +26,10 @@ U0 = -w0*L*Io*sin(phi);     % Initial condition for U
 f_U = @(t, U, I) -I/C;      % Time derivative of U
 
 % Initialize simulation
-dt = interface.initialize();
-if (interface.isActionRequired(cowid))
-    interface.writeScalarData(U_ID, vertex_ID, U0);
-    interface.markActionFulfilled(cowid)
+if interface.requiresInitialData()
+    interface.writeScalarData(meshName, DataNameU, vertex_ID, U0);
 end
-interface.initializeData();
+dt = interface.initialize();
 
 % Start simulation
 t = t0 + dt;
@@ -43,9 +40,9 @@ while t < t_max;
     U0 = U_ode(end);
 
     % Exchange data
-    interface.writeScalarData(U_ID, vertex_ID, U0);
+    interface.writeScalarData(meshName, DataNameU, vertex_ID, U0);
     dt = interface.advance(dt);
-    I0 = interface.readScalarData(I_ID, vertex_ID);
+    I0 = interface.readScalarData(meshName, DataNameI, vertex_ID);
 
     % Finish time step
     t0 = t;
