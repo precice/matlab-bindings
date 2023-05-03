@@ -2,17 +2,14 @@ clear; close all; clc;
 
 % Initialize and configure preCICE
 interface = precice.SolverInterface("SolverI", "precice-config.xml", 0, 1);
-cowid = precice.constants.actionWriteInitialData(); % Required for data initialization
-coric = precice.constants.actionReadIterationCheckpoint(); % For implicit coupling
-cowic = precice.constants.actionWriteIterationCheckpoint(); % For implicit coupling
 
 % Geometry IDs. As it is a 0-D simulation, only one vertex is necessary.
-meshID = interface.getMeshID("MeshI");
-vertex_ID = interface.setMeshVertex(meshID, [0 0]);
+meshName ="MeshI";
+vertex_ID = interface.setMeshVertex(meshName, [0 0]);
 
 % Data IDs
-I_ID = interface.getDataID("I", meshID);
-U_ID = interface.getDataID("U", meshID);
+dataNameI = "I";
+dataNameU = "U";
 
 % Simulation parameters and initial condition
 C = 2;                      % Capacitance
@@ -32,22 +29,19 @@ f_I = @(t, I, U) U/L;       % Time derivative of I
 I = I0;                     % Vector of I through time
 U = U0;                     % Vector of U through time
 t_vec = t0;                 % Vector of time
-dt = interface.initialize();
-if (interface.isActionRequired(cowid))
-    interface.writeScalarData(I_ID, vertex_ID, I0);
-    interface.markActionFulfilled(cowid)
+if interface.requiresInitialData()
+    interface.writeScalarData(meshName, DataNameI, vertex_ID, I0);
 end
-interface.initializeData();
+dt = interface.initialize();
 
 % Start simulation
 t = t0 + dt;
 while interface.isCouplingOngoing()
 
     % Record checkpoint if necessary
-    if interface.isActionRequired(cowic)
+    if interface.requiresWritingCheckpoint()
         I0_checkpoint = I0;
         U0_checkpoint = U0;
-        interface.markActionFulfilled(cowic)
     end
 
     % Make Simulation Step
@@ -55,16 +49,15 @@ while interface.isCouplingOngoing()
     I0 = I_ode(end);
 
     % Exchange data
-    interface.writeScalarData(I_ID, vertex_ID, I0);
+    interface.writeScalarData(meshName, dataNameI, vertex_ID, I0);
     dt = interface.advance(dt);
-    
+
     % Recover checkpoint if not converged, else finish time step
-    if interface.isActionRequired(coric)
+    if interface.requiresReadingCheckpoint()
         I0 = I0_checkpoint;
         U0 = U0_checkpoint;
-        interface.markActionFulfilled(coric)
     else
-        U0 = interface.readScalarData(U_ID, vertex_ID);
+        U0 = interface.readScalarData(meshName, dataNameU, vertex_ID);
         U = [U U0];
         I = [I I0];
         t_vec = [t_vec, t];

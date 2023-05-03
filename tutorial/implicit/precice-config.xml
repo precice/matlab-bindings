@@ -18,8 +18,8 @@
     </mesh>
 
     <participant name="SolverI">
-      <use-mesh name="MeshI" provide="yes"/>
-      <use-mesh name="MeshU" from="SolverU"/>
+      <provide-mesh name="MeshI" />
+      <receive-mesh name="MeshU" from="SolverU"/>
       <write-data name="I"     mesh="MeshI" />
       <read-data  name="U" mesh="MeshI" />
       <mapping:nearest-neighbor
@@ -29,8 +29,8 @@
     </participant>
 
     <participant name="SolverU">
-      <use-mesh name="MeshU" provide="yes"/>
-      <use-mesh name="MeshI" from="SolverI"/>
+      <provide-mesh name="MeshU" />
+      <receive-mesh name="MeshI" from="SolverI"/>
       <write-data name="U"     mesh="MeshU" />
       <read-data  name="I" mesh="MeshU" />
       <mapping:nearest-neighbor

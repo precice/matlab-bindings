@@ -46,19 +46,14 @@ classdef SolverInterface < handle
             dt = preciceGateway(uint8(10));
         end
         
-        % initialize Data
-        function initializeData(obj)
-            preciceGateway(uint8(11));
-        end
-        
         % advance
         function dt = advance(obj,dt)
-            dt = preciceGateway(uint8(12),dt);
+            dt = preciceGateway(uint8(11),dt);
         end
         
         % finalize
         function finalize(obj)
-            preciceGateway(uint8(13));
+            preciceGateway(uint8(12));
         end
         
         %% Status queries
@@ -72,48 +67,26 @@ classdef SolverInterface < handle
             bool = preciceGateway(uint8(21));
         end
         
-        % isReadDataAvailable
-        function bool = isReadDataAvailable(obj)
-            bool = preciceGateway(uint8(22));
-        end
-        
-        % isWriteDataRequired
-        function bool = isWriteDataRequired(obj,dt)
-            bool = preciceGateway(uint8(23),dt);
-        end
-        
         % isTimeWindowComplete
         function bool = isTimeWindowComplete(obj)
-            bool = preciceGateway(uint8(24));
-        end
-        
-        % hasToEvaluateSurrogateModel
-        function bool = hasToEvaluateSurrogateModel(obj)
-            bool = preciceGateway(uint8(25));
-        end
-        
-        % hasToEvaluateFineModel
-        function bool = hasToEvaluateFineModel(obj)
-            bool = preciceGateway(uint8(26));
+            bool = preciceGateway(uint8(22));
         end
 
-        %% Action Methods
-        % isActionRequired
-        function bool = isActionRequired(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            bool = preciceGateway(uint8(30),action);
+        % requiresInitialData
+        function bool = requiresInitialData(obj)
+            bool = preciceGateway(uint8(23))
         end
-        
-        % markActionFulfilled
-        function markActionFulfilled(obj,action)
-            if ischar(action)
-                action = string(action);
-            end
-            preciceGateway(uint8(31),action);
+
+        % requiresReadingCheckpoint
+        function bool = requiresReadingCheckpoint(obj)
+            bool = preciceGateway(uint8(24));
         end
-        
+
+        % requiresWritingCheckpoint
+        function bool = requiresWritingCheckpoint(obj)
+            bool = preciceGateway(uint8(25));
+        end
+
         %% Mesh Access
         % hasMesh
         function bool = hasMesh(obj,meshName)
@@ -122,165 +95,240 @@ classdef SolverInterface < handle
             end
             bool = preciceGateway(uint8(40),meshName);
         end
-        
-        % getMeshID
-        function id = getMeshID(obj,meshName)
+
+        % requiresMeshConnectivityFor
+        function bool = requiresMeshConnectivityFor(obj,meshName)
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            id = preciceGateway(uint8(41),meshName);
+            bool = preciceGateway(uint8(41),meshName)
         end
 
-        % getMeshHandle not yet implemented
-        
-        % setMeshVertex
-        function vertexId = setMeshVertex(obj,meshID,position)
-            vertexId = preciceGateway(uint8(44),int32(meshID),position);
+        % requiresGradientDataFor
+        function bool = requiresGradientDataFor(obj,meshName,dataName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            bool = preciceGateway(uint8(42),meshName,dataName);
         end
         
+        % setMeshVertex
+        function vertexId = setMeshVertex(obj,meshName,position)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            vertexId = preciceGateway(uint8(43),meshName,position);
+        end
+
         % getMeshVertexSize
-        function vertexId = getMeshVertexSize(obj,meshID)
-            vertexId = preciceGateway(uint8(45),int32(meshID));
+        function vertexId = getMeshVertexSize(obj,meshName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            vertexId = preciceGateway(uint8(44),meshName);
         end
         
         % setMeshVertices
-        function vertexIds = setMeshVertices(obj,meshID,positions)
+        function vertexIds = setMeshVertices(obj,meshName,positions)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
             obj.checkDimensions(size(positions, 1), obj.getDimensions())
-            inSize = size(positions, 2);
-            vertexIds = preciceGateway(uint8(46),int32(meshID),int32(inSize),positions);
-        end
-        
-        % getMeshVertices
-        function positions = getMeshVertices(obj,meshID,vertexIds)
-            inSize = length(vertexIds);
-            positions = preciceGateway(uint8(47),int32(meshID),int32(inSize),vertexIds);
-        end
-        
-        % getMeshVertexIDsFromPositions
-        function vertexIds = getMeshVertexIDsFromPositions(obj,meshID,positions)
-            obj.checkDimensions(size(positions, 1), obj.getDimensions())
-            inSize = size(positions, 2);
-            vertexIds = preciceGateway(uint8(48),int32(meshID),int32(inSize),positions);
+            inSize = size(positions,2);
+            vertexIds = preciceGateway(uint8(45),meshName,int32(inSize),positions);
         end
         
         % setMeshEdge
-        function edgeID = setMeshEdge(obj, meshID, firstVertexID, secondVertexID)
-            edgeID = preciceGateway(uint8(49),int32(meshID),int32(firstVertexID),int32(secondVertexID));
+        function edgeID = setMeshEdge(obj, meshName, firstVertexID, secondVertexID)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            edgeID = preciceGateway(uint8(46),meshName,int32(firstVertexID),int32(secondVertexID));
         end
-        
+
+        % setMeshEdges
+        function edgeIDs = setMeshEdges(obj, meshName, vertices)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            obj.checkDimensions(size(vertices,1), 2)
+            inSize = size(vertices,2);
+            edgeIDs = preciceGateway(uint8(47),meshName,int32(size(vertices,2)),vertices);
+        end
+
         % setMeshTriangle
-        function setMeshTriangle(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID)
-            preciceGateway(uint8(50),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID));
+        function setMeshTriangle(obj, meshName, firstVertexID, secondVertexID, thirdVertexID)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(48),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
         end
-        
-        % setMeshTriangleWithEdges
-        function setMeshTriangleWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID)
-            preciceGateway(uint8(51),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID));
+
+        % setMeshTriangles
+        function setMeshTriangles(obj, meshName, vertices)
+            obj.checkDimensions(size(vertices,1), 3)
+            inSize = size(vertices,2);
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(49),meshName,int32(size(vertices,2)),vertices);
         end
         
         % setMeshQuad
-        function setMeshQuad(obj, meshID, firstEdgeID, secondEdgeID, thirdEdgeID, fourthEdgeID)
-            preciceGateway(uint8(52),int32(meshID),int32(firstEdgeID),int32(secondEdgeID),int32(thirdEdgeID),int32(fourthEdgeID));
-        end
-        
-        % setMeshQuadWithEdges
-        function setMeshQuadWithEdges(obj, meshID, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
-            preciceGateway(uint8(53),int32(meshID),int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
-        end
-        
-        % setMeshAccessRegion - EXPERIMENTAL
-        function setMeshAccessRegion(meshID, boundingBox)
-            preciceGateway(uint8(55),int32(meshID),boundingBox)
+        function setMeshQuad(obj, meshName, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(50),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
         end
 
-        % getMeshVerticesAndIDs - EXPERIMENTAL
-        function [vertices, outIDs] = getMeshVerticesAndIDs(meshID)
-            inSize = getMeshVertexSize(meshID);
-            [vertices,outIDs] = preciceGateway(uint8(56),int32(meshID),int32(inSize));
+        % setMeshQuads
+        function setMeshQuads(obj, meshName, vertices)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            obj.checkDimensions(size(vertices,1), 4)
+            inSize = size(vertices,2);
+            preciceGateway(uint8(51),meshName,int32(size(vertices,2)),vertices);
         end
 
-        % isMeshConnectivityRequired
-        function bool = isMeshConnectivityRequired(meshID)
-            bool = preciceGateway(uint8(54),int32(meshID))
+        % setMeshTetrahedron
+        function setMeshTetrahedron(obj, meshName, firstVertexID, secondVertexID, thirdVertexID, fourthVertexID)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(52),meshName,int32(firstVertexID),int32(secondVertexID),int32(thirdVertexID),int32(fourthVertexID));
+        end
+
+        % setMeshTetrahedra
+        function setMeshTetrahedra(obj, meshName, vertices)
+            obj.checkDimensions(size(vertices,1), 4)
+            inSize = size(vertices,2);
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(53),meshName,int32(inSize),vertices);
         end
         
+        % setMeshAccessRegion
+        function setMeshAccessRegion(meshName, boundingBox)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            preciceGateway(uint8(54),meshName,boundingBox)
+        end
+
+        % getMeshVerticesAndIDs
+        function [vertices, outIDs] = getMeshVerticesAndIDs(meshName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            inSize = getMeshVertexSize(meshName);
+            [vertices,outIDs] = preciceGateway(uint8(55),meshName,int32(inSize));
+        end
+
         %% Data Access
-        % hasDataID
-        function bool = hasData(obj,dataName,meshID)
+        % hasData
+        function bool = hasData(obj,meshName,dataName)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            bool = preciceGateway(uint8(60),dataName,int32(meshID));
-        end
-        
-        % getDataID
-        function id = getDataID(obj,dataName,meshID)
-            if ischar(dataName)
-                dataName = string(dataName);
-            end
-            id = preciceGateway(uint8(61),dataName,int32(meshID));
-        end
-        
-        % mapReadDataTo
-        function mapReadDataTo(obj,meshID)
-            preciceGateway(uint8(62),int32(meshID));
-        end
-        
-        % mapWriteDataFrom
-        function mapWriteDataFrom(obj,meshID)
-            preciceGateway(uint8(63),int32(meshID));
+            bool = preciceGateway(uint8(60),dataName,meshName);
         end
         
         % writeBlockVectorData
-        function writeBlockVectorData(obj,dataID,valueIndices,values)
+        function writeBlockVectorData(obj,meshName,dataName,valueIndices,values)
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+
             inSize = length(valueIndices);
             obj.checkDimensions(size(values, 2), inSize)
             obj.checkDimensions(size(values, 1), obj.getDimensions())
-            preciceGateway(uint8(64),int32(dataID),int32(inSize),valueIndices,values);
+            preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,values);
         end
         
         % writeVectorData
-        function writeVectorData(obj,dataID,valueIndex,value)
-            preciceGateway(uint8(65),int32(dataID),int32(valueIndex),value);
+        function writeVectorData(obj,meshName,dataName,valueIndex,value)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            preciceGateway(uint8(62),meshName,dataName,int32(valueIndex),value);
         end
         
         % writeBlockScalarData
-        function writeBlockScalarData(obj,dataID,valueIndices,values)
+        function writeBlockScalarData(obj,meshName,dataName,valueIndices,values)
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
+            end
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
             end
             inSize = length(valueIndices);
             assert(inSize == length(values), 'valueIndices and values should must have the same length');
-            preciceGateway(uint8(66),int32(dataID),int32(inSize),valueIndices,values);
+            preciceGateway(uint8(63),meshName,dataName,int32(inSize),valueIndices,values);
         end
         
         % writeScalarData
-        function writeScalarData(obj,dataID,valueIndex,value)
-            preciceGateway(uint8(67),int32(dataID),int32(valueIndex),value);
+        function writeScalarData(obj,meshName,dataName,valueIndex,value)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            preciceGateway(uint8(64),meshName,dataName,int32(valueIndex),value);
         end
         
         % readBlockVectorData
-        function values = readBlockVectorData(obj,dataID,valueIndices)
+        function values = readBlockVectorData(obj,meshName,dataName,valueIndices)
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
             inSize = length(valueIndices);
-            values = preciceGateway(uint8(68),int32(dataID),int32(inSize),valueIndices);
+            values = preciceGateway(uint8(65),meshName,dataName,int32(inSize),valueIndices);
         end
         
         % readVectorData
-        function value = readVectorData(obj,dataID,valueIndex)
-            value = preciceGateway(uint8(69),int32(dataID),int32(valueIndex));
+        function value = readVectorData(obj,meshName,dataName,valueIndex)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            value = preciceGateway(uint8(66),meshName,dataName,int32(valueIndex));
         end
         
         % readBlockScalarData
-        function values = readBlockScalarData(obj,dataID,valueIndices,transpose)
+        function values = readBlockScalarData(obj,meshName,dataName,valueIndices,transpose)
             if nargin<4
                 transpose=false;
             end
@@ -288,55 +336,88 @@ classdef SolverInterface < handle
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
             inSize = length(valueIndices);
-            values = preciceGateway(uint8(70),int32(dataID),int32(inSize),valueIndices,transpose);
+            values = preciceGateway(uint8(67),meshName,dataName,int32(inSize),valueIndices,transpose);
         end
         
         % readScalarData
-        function value = readScalarData(obj,dataID,valueIndex)
-            value = preciceGateway(uint8(71),int32(dataID),int32(valueIndex));
+        function value = readScalarData(obj,meshName,dataName,valueIndex)
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            value = preciceGateway(uint8(68),meshName,dataName,int32(valueIndex));
         end
 
-        % isGradientDataRequired
-        function bool = isGradientDataRequired(obj, dataID)
-            bool = preciceGateway(uint8(72), int32(dataID));
-        end
-
+        %% Data Access
         % writeBlockVectorGradientData
-        function writeBlockVectorGradientData(obj, dataID, valueIndices, gradientValues)
+        function writeBlockVectorGradientData(obj, meshName, dataName, valueIndices, gradientValues)
             if ~isa(valueIndices, 'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
-
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
             inSize = length(valueIndices);
             obj.checkDimensions(size(gradientValues, 2), inSize)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
-            preciceGateway(uint8(73), int32(dataID), int32(inSize), valueIndices, gradientValues);
+            preciceGateway(uint8(69), meshName,dataName, int32(inSize), valueIndices, gradientValues);
         end
 
         % writeVectorGradientData
-        function writeVectorGradientData(obj, dataID, valueIndex, gradientValues)
-            preciceGateway(uint8(74), int32(dataID), int32(valueIndex), gradientValues);
+        function writeVectorGradientData(obj, meshName, dataName, valueIndex, gradientValues)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            preciceGateway(uint8(70), meshName, dataName, int32(valueIndex), gradientValues);
         end
 
         % writeBlockScalarGradientData
-        function writeBlockScalarGradientData(obj, dataID, valueIndices, gradientValues)
+        function writeBlockScalarGradientData(obj, meshName, dataName, valueIndices, gradientValues)
 
             if ~isa(valueIndices, 'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
+            end
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
             end
 
             inSize = length(valueIndices);
             obj.checkDimensions(size(gradientValues, 2), inSize)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
-            preciceGateway(uint8(75), int32(dataID), int32(inSize), valueIndices, gradientValues);
+            preciceGateway(uint8(71), meshName, dataName, int32(inSize), valueIndices, gradientValues);
         end
 
         % writeScalarGradientData
-        function writeScalarGradientData(obj, dataID, valueIndex, gradientValues)
-            preciceGateway(uint8(76), int32(dataID), int32(valueIndex), gradientValues);
+        function writeScalarGradientData(obj, meshName, dataName, valueIndex, gradientValues)
+            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions())
+            if ischar(meshName)
+                meshName = string(meshName);
+            end
+            if ischar(dataName)
+                dataName = string(dataName);
+            end
+            preciceGateway(uint8(72), meshName, dataName, int32(valueIndex), gradientValues);
         end
 
         %% Helper functions
