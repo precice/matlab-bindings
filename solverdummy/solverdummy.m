@@ -34,7 +34,7 @@ function solverdummy(configFileName,participantName)
     
     interface = precice.Participant(participantName, configFileName, ProcessIndex, ProcessSize);
     
-    dims = interface.getMeshDimensions();
+    dims = interface.getMeshDimensions(meshName);
     
     vertices(dims, numVertices) = 0;
     readData(dims, numVertices) = 0;

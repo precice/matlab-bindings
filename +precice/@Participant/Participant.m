@@ -93,7 +93,7 @@ classdef Participant < handle
 
         % requiresInitialData
         function bool = requiresInitialData(obj)
-            bool = preciceGateway(uint8(25))
+            bool = preciceGateway(uint8(25));
         end
 
         % requiresReadingCheckpoint
@@ -147,7 +147,7 @@ classdef Participant < handle
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            obj.checkDimensions(size(positions, 1), obj.getDimensions())
+            obj.checkDimensions(size(positions, 1), obj.getMeshDimensions(meshName))
             inSize = size(positions,2);
             vertexIds = preciceGateway(uint8(44),meshName,int32(inSize),positions);
         end
@@ -245,7 +245,7 @@ classdef Participant < handle
             end
 
             obj.checkDimensions(size(values, 2), inSize)
-            obj.checkDimensions(size(values, 1), obj.getDimensions())
+            obj.checkDimensions(size(values, 1), obj.getMeshDimensions(meshName))
             preciceGateway(uint8(60),meshName,dataName,valueIndices,values);
         end
         
@@ -289,7 +289,7 @@ classdef Participant < handle
                 dataName = string(dataName);
             end
             obj.checkDimensions(size(gradientValues, 2), inSize)
-            obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
+            obj.checkDimensions(size(gradientValues, 1), obj.getMeshDimensions(meshName) * obj.getMeshDimensions(meshName))
             preciceGateway(uint8(63),meshName,dataName,valueIndices,gradientValues);
         end
 
