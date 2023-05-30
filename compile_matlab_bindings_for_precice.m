@@ -4,7 +4,7 @@
 % the current file. Thus, the script will work even if the user calls it
 % from a different folder
 path = string(fileparts(mfilename('fullpath')));
-path_Interface = strjoin([path,"+precice","@SolverInterface","private","preciceGateway"],filesep);
+path_Interface = strjoin([path,"+precice","@Participant","private","preciceGateway"],filesep);
 path_namespace_precice = strjoin([path, "+precice", "private", "preciceGateway"],filesep);
 
 % Get the flags for linking to preCICE
