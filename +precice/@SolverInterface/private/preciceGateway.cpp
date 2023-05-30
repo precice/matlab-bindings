@@ -45,7 +45,7 @@ enum class FunctionID {
     writeData = 60,
     readData = 61,
     requiresGradientDataFor = 62,
-    writeBlockVectorGradientData = 63,
+    writeGradientData = 63,
     setMeshAccessRegion = 64,
     getMeshVerticesAndIDs = 65,
 };
@@ -55,6 +55,16 @@ std::string convertToString(const matlab::data::Array& arr) {
     matlab::data::TypedArray<MATLABString> in1 = arr;
     std::string participantName = in1[0];
     return participantName;
+}
+std::vector<double> convertToDoubleVector(const matlab::data::Array& arr) {
+    matlab::data::TypedArray<double> in1 = arr;
+    std::vector<double> vec(in1.begin(), in1.end());
+    return vec;
+}
+std::vector<int> convertToIntVector(const matlab::data::Array& arr) {
+    matlab::data::TypedArray<int> in1 = arr;
+    std::vector<int> vec(in1.begin(), in1.end());
+    return vec;
 }
 
 class MexFunction: public matlab::mex::Function {
@@ -129,7 +139,8 @@ public:
             
             case FunctionID::getMeshDimensions:
             {
-                int dims = interface->getMeshDimensions();
+                const std::string meshName = convertToString(inputs[1]);
+                int dims = interface->getMeshDimensions(meshName);
                 outputs[0] = factory.createArray<uint8_t>({1,1}, {(uint8_t) dims});
                 break;
             }
@@ -202,8 +213,8 @@ public:
             case FunctionID::setMeshVertex:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<double> position = inputs[2];
-                int id = interface->setMeshVertex(meshName,&*position.begin());
+                const std::vector<double> position_vec = convertToDoubleVector(inputs[2]);
+                int id = interface->setMeshVertex(meshName,position_vec);
                 outputs[0] = factory.createScalar<int32_t>(id);
                 break;
             }
@@ -211,12 +222,10 @@ public:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<double> positions = inputs[3];
-                buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
-                int32_t* ids = ids_ptr.get();
-                interface->setMeshVertices(meshName,size[0],&*positions.begin(),ids);
-                // problem: size[0] is not of type size_t
-                outputs[0] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
+                const std::vector<double> positions = convertToDoubleVector(inputs[3]);
+                std::vector<int32_t> ids(size[0]);
+                interface->setMeshVertices(meshName,positions,ids);
+                outputs[0] = factory.createArray<int32_t>({1, ids.size()}, ids.data(), ids.data()+ids.size());
                 break;
             }
             case FunctionID::getMeshVertexSize:
@@ -238,8 +247,8 @@ public:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertices = inputs[3];
-                interface->setMeshEdges(meshName,size[0],&*vertices.begin());
+                const std::vector<int> vertices = convertToIntVector(inputs[3]);
+                interface->setMeshEdges(meshName,vertices);
                 break;
             }
             case FunctionID::setMeshTriangle:
@@ -254,9 +263,8 @@ public:
             case FunctionID::setMeshTriangles:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertices = inputs[3];
-                interface->setMeshTriangles(meshName,size[0],&*vertices.begin());
+                const std::vector<int> vertices = convertToIntVector(inputs[2]);
+                interface->setMeshTriangles(meshName,vertices);
                 break;
             }
             case FunctionID::setMeshQuad:
@@ -272,9 +280,8 @@ public:
             case FunctionID::setMeshQuads:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertices = inputs[3];
-                interface->setMeshQuads(meshName,size[0],&*vertices.begin());
+                const std::vector<int> vertices = convertToIntVector(inputs[2]);
+                interface->setMeshQuads(meshName,vertices);
                 break;
             }
             case FunctionID::setMeshTetrahedron:
@@ -290,19 +297,17 @@ public:
             case FunctionID::setMeshTetrahedra:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<int32_t> size = inputs[2];
-                const TypedArray<int32_t> vertices = inputs[3];
-                interface->setMeshTetrahedra(meshName,size[0],&*vertices.begin());
+                const std::vector<int> vertices = convertToIntVector(inputs[2]);
+                interface->setMeshTetrahedra(meshName,vertices);
                 break;
             }
             case FunctionID::writeData:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
-                const TypedArray<int32_t> size = inputs[3];
-                const TypedArray<int32_t> vertexIDs = inputs[4];
-                const TypedArray<double> values = inputs[5];
-                interface->writeData(meshName,dataName,size[0],&*vertexIDs.begin(),&*values.begin());
+                const std::vector<int> vertexIDs = convertToIntVector(inputs[3]);
+                const std::vector<double> values = convertToDoubleVector(inputs[4]);
+                interface->writeData(meshName,dataName,vertexIDs,values);
                 break;
             }
             case FunctionID::readData:
@@ -310,50 +315,47 @@ public:
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
                 const TypedArray<int32_t> size = inputs[3];
-                const TypedArray<int32_t> vertexIDs = inputs[4];
-                size_t dim = interface->getDimensions();
-                buffer_ptr_t<double> values_ptr = factory.createBuffer<double>(size[0]*dim);
-                double* values = values_ptr.get();
-                interface->readData(meshName,dataName,size[0],&*vertexIDs.begin(),values);
-                outputs[0] = factory.createArrayFromBuffer<double>({dim,size[0]}, std::move(values_ptr));
+                const std::vector<int32_t> vertexIDs = convertToIntVector(inputs[4]);
+                size_t dim = interface->getMeshDimensions(meshName);
+                const TypedArray<double> relativeReadTime = inputs[5];
+                std::vector<double> values(size[0]*dim);
+                interface->readData(meshName,dataName,vertexIDs,relativeReadTime[0],values);
+                outputs[0] = factory.createArray<double>({size[0], dim}, values.data(), values.data()+values.size());
                 break;
             }
-            case FunctionID::requiresGradientDataForBlock:
+            case FunctionID::requiresGradientDataFor:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
-                bool requiresGradientData = interface->requiresGradientDataForBlock(meshName,dataName);
+                bool requiresGradientData = interface->requiresGradientDataFor(meshName,dataName);
                 outputs[0] = factory.createScalar<bool>(requiresGradientData);
                 break;
             }
-            case FunctionID::writeBlockVectorGradientData:
+            case FunctionID::writeGradientData:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
-                const TypedArray<int32_t> size = inputs[3];
-                const TypedArray<int32_t> vertexIDs = inputs[4];
-                const TypedArray<double> gradientValues = inputs[5];
-                interface->writeBlockVectorGradientData(meshName,dataName, size[0], &*vertexIDs.begin(), &*gradientValues.begin());
+                const std::vector<int32_t> vertexIDs = convertToIntVector(inputs[4]);
+                const std::vector<double> gradientValues = convertToDoubleVector(inputs[5]);
+                interface->writeGradientData(meshName,dataName, vertexIDs, gradientValues);
                 break;
             }
             case FunctionID::setMeshAccessRegion:
             {
                 const std::string meshName = convertToString(inputs[1]);
-                const TypedArray<double> boundingBox = inputs[2];
-                interface->setMeshAccessRegion(meshName,&*boundingBox.begin());
+                const std::vector<double> boundingBox = convertToDoubleVector(inputs[2]);
+                interface->setMeshAccessRegion(meshName,boundingBox);
                 break;
             }
             case FunctionID::getMeshVerticesAndIDs:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const TypedArray<int32_t> size = inputs[2];
-                buffer_ptr_t<int32_t> ids_ptr = factory.createBuffer<int32_t>(size[0]);
-                int32_t* ids = ids_ptr.get();
-                buffer_ptr_t<double> positions_ptr = factory.createBuffer<double>(size[0]);
-                double* positions = positions_ptr.get();
-                interface->getMeshVerticesAndIDs(meshName,size[0],ids,positions);
-                outputs[0] = factory.createArrayFromBuffer<double>({1,size[0]}, std::move(positions_ptr));
-                outputs[1] = factory.createArrayFromBuffer<int32_t>({1,size[0]}, std::move(ids_ptr));
+                std::vector <int32_t> ids(size[0]);
+                std::vector <double> positions(size[0]*3);
+                interface->getMeshVerticesAndIDs(meshName,ids,positions);
+                outputs[0] = factory.createArray<int32_t>({size[0]}, ids.data(), ids.data()+ids.size());
+                outputs[1] = factory.createArray<double>({size[0], 3}, positions.data(), positions.data()+positions.size());
                 break;
             } 
 

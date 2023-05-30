@@ -189,11 +189,10 @@ classdef Participant < handle
         % setMeshTriangles
         function setMeshTriangles(obj, meshName, vertices)
             obj.checkDimensions(size(vertices,1), 3)
-            inSize = size(vertices,2);
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            preciceGateway(uint8(49),meshName,int32(size(vertices,2)),vertices);
+            preciceGateway(uint8(49),meshName,vertices);
         end
         
         % setMeshQuad
@@ -210,8 +209,7 @@ classdef Participant < handle
                 meshName = string(meshName);
             end
             obj.checkDimensions(size(vertices,1), 4)
-            inSize = size(vertices,2);
-            preciceGateway(uint8(51),meshName,int32(inSize),vertices);
+            preciceGateway(uint8(51),meshName,vertices);
         end
 
         % setMeshTetrahedron
@@ -225,11 +223,10 @@ classdef Participant < handle
         % setMeshTetrahedra
         function setMeshTetrahedra(obj, meshName, vertices)
             obj.checkDimensions(size(vertices,1), 4)
-            inSize = size(vertices,2);
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            preciceGateway(uint8(53),meshName,int32(inSize),vertices);
+            preciceGateway(uint8(53),meshName,vertices);
         end
 
 
@@ -247,14 +244,13 @@ classdef Participant < handle
                 dataName = string(dataName);
             end
 
-            inSize = length(valueIndices);
             obj.checkDimensions(size(values, 2), inSize)
             obj.checkDimensions(size(values, 1), obj.getDimensions())
-            preciceGateway(uint8(60),meshName,dataName,int32(inSize),valueIndices,values);
+            preciceGateway(uint8(60),meshName,dataName,valueIndices,values);
         end
         
         % readData
-        function values = readData(obj,meshName,dataName,valueIndices)
+        function values = readData(obj,meshName,dataName,valueIndices,relativeReadTime)
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
@@ -266,7 +262,7 @@ classdef Participant < handle
                 dataName = string(dataName);
             end
             inSize = length(valueIndices);
-            values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices);
+            values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
         end
 
         % requiresGradientDataFor
@@ -280,8 +276,8 @@ classdef Participant < handle
             bool = preciceGateway(uint8(62),meshName,dataName);
         end
 
-        % writeBlockVectorGradientData
-        function writeBlockVectorGradientData(obj, meshName, dataName, valueIndices, gradientValues)
+        % writeGradientData
+        function writeGradientData(obj, meshName, dataName, valueIndices, gradientValues)
             if ~isa(valueIndices, 'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
@@ -292,10 +288,9 @@ classdef Participant < handle
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            inSize = length(valueIndices);
             obj.checkDimensions(size(gradientValues, 2), inSize)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
-            preciceGateway(uint8(63), meshName,dataName, int32(inSize), valueIndices, gradientValues);
+            preciceGateway(uint8(63),meshName,dataName,valueIndices,gradientValues);
         end
 
         % setMeshAccessRegion
@@ -303,7 +298,7 @@ classdef Participant < handle
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            preciceGateway(uint8(64),meshName,boundingBox)
+            preciceGateway(uint8(64),meshName,boundingBox);
         end
 
         % getMeshVerticesAndIDs

@@ -92,7 +92,7 @@ classdef ParticipantOOP < precice.Participant
             bool = feval(obj.oMexHost,"preciceGateway",uint8(22));
         end
         
-        % isTimestepComplete
+        % isTimeWindowComplete
         function bool = isTimeWindowComplete(obj)
             bool = feval(obj.oMexHost,"preciceGateway",uint8(23));
         end
@@ -200,11 +200,10 @@ classdef ParticipantOOP < precice.Participant
         % setMeshTriangles
         function setMeshTriangles(obj, meshName, vertices)
             obj.checkDimensions(size(vertices,1), 3)
-            inSize = size(vertices,2);
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(49),meshName,int32(inSize),vertices);
+            feval(obj.oMexHost,"preciceGateway",uint8(49),meshName,vertices);
         end
         
         % setMeshQuad
@@ -221,8 +220,7 @@ classdef ParticipantOOP < precice.Participant
                 meshName = string(meshName);
             end
             obj.checkDimensions(size(vertices,1), 4)
-            inSize = size(vertices,2);
-            feval(obj.oMexHost,"preciceGateway",uint8(51),meshName,int32(inSize),vertices);
+            feval(obj.oMexHost,"preciceGateway",uint8(51),meshName,vertices);
         end
 
         % setMeshTetrahedron
@@ -236,11 +234,10 @@ classdef ParticipantOOP < precice.Participant
         % setMeshTetrahedra
         function setMeshTetrahedra(obj, meshName, vertices)
             obj.checkDimensions(size(vertices,1), 4)
-            inSize = size(vertices,2);
             if ischar(meshName)
                 meshName = string(meshName);
             end
-            feval(obj.oMexHost,"preciceGateway",uint8(53),meshName,int32(inSize),vertices);
+            feval(obj.oMexHost,"preciceGateway",uint8(53),meshName,vertices);
         end
 
 
@@ -258,14 +255,13 @@ classdef ParticipantOOP < precice.Participant
                 dataName = string(dataName);
             end
 
-            inSize = length(valueIndices);
             obj.checkDimensions(size(values, 2), inSize)
             obj.checkDimensions(size(values, 1), obj.getDimensions())
-            feval(obj.oMexHost,"preciceGateway",uint8(60),meshName,dataName,int32(inSize),valueIndices,values);
+            feval(obj.oMexHost,"preciceGateway",uint8(60),meshName,dataName,valueIndices,values);
         end
         
         % readData
-        function values = readData(obj,meshName,dataName,valueIndices)
+        function values = readData(obj,meshName,dataName,valueIndices,relativeReadTime)
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
@@ -277,7 +273,7 @@ classdef ParticipantOOP < precice.Participant
                 dataName = string(dataName);
             end
             inSize = length(valueIndices);
-            values = feval(obj.oMexHost,"preciceGateway",uint8(61),meshName,dataName,int32(inSize),valueIndices);
+            values = feval(obj.oMexHost,"preciceGateway",uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
         end
 
         % requiresGradientDataFor
@@ -291,8 +287,8 @@ classdef ParticipantOOP < precice.Participant
             bool = feval(obj.oMexHost,"preciceGateway",uint8(62),meshName,dataName);
         end
 
-        % writeBlockVectorGradientData
-        function writeBlockVectorGradientData(obj, meshName, dataName, valueIndices, gradientValues)
+        % writeGradientData
+        function writeGradientData(obj, meshName, dataName, valueIndices, gradientValues)
             if ~isa(valueIndices, 'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
@@ -303,10 +299,9 @@ classdef ParticipantOOP < precice.Participant
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            inSize = length(valueIndices);
             obj.checkDimensions(size(gradientValues, 2), inSize)
             obj.checkDimensions(size(gradientValues, 1), obj.getDimensions() * obj.getDimensions())
-            feval(obj.oMexHost, "preciceGateway", uint8(63), meshName,dataName, int32(inSize), valueIndices, gradientValues);
+            feval(obj.oMexHost, "preciceGateway", uint8(63),meshName,dataName,valueIndices,gradientValues);
         end
 
         % setMeshAccessRegion
