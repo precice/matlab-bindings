@@ -82,6 +82,7 @@ public:
     MexFunction(): constructed{false}, factory{}, interface{NULL} {}
 
     void operator()(ArgumentList outputs, ArgumentList inputs) {
+        std::cout << "Gateway: MexFunction called" << std::endl;
         // Get the function ID from the input
         TypedArray<uint8_t> functionIDArray = inputs[0];
         FunctionID functionID = static_cast<FunctionID>(static_cast<int>(functionIDArray[0]));
@@ -116,6 +117,7 @@ public:
             }
             case FunctionID::_destructor_:
             {
+                std::cout << "Gateway: Destructor called" << std::endl;
                 delete interface;
                 constructed = false;
                 break;
@@ -321,6 +323,10 @@ public:
                 std::vector<double> values(size[0]*dim);
                 interface->readData(meshName,dataName,vertexIDs,relativeReadTime[0],values);
                 outputs[0] = factory.createArray<double>({size[0], dim}, values.data(), values.data()+values.size());
+                // debug:
+                std::cout << "Gateway: values: ";
+                for (size_t i=0; i<values.size(); ++i)
+                    std::cout << values[i] << " ";
                 break;
             }
             case FunctionID::requiresGradientDataFor:
@@ -363,6 +369,7 @@ public:
                 myMexPrint("An unknown ID was passed.");
                 return;
         }
+        std::cout << "Gateway: Function executed." << std::endl;
         // Do error handling
         // myMexPrint("A problem occurred while executing the function.");
     }

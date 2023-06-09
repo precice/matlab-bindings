@@ -37,6 +37,7 @@ classdef Participant < handle
         % Destructor
         function delete(obj)
             % Delete the mex host
+            disp('Participant: Deleting Participant')
             preciceGateway(uint8(1));
         end
         
@@ -53,6 +54,7 @@ classdef Participant < handle
         
         % finalize
         function finalize(obj)
+            disp('Participant: Finalizing Participant')
             preciceGateway(uint8(12));
         end
         
@@ -251,10 +253,12 @@ classdef Participant < handle
         
         % readData
         function values = readData(obj,meshName,dataName,valueIndices,relativeReadTime)
+            disp('Participant: Im in readData')
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
+            disp('Participant: Im in readData 2')
             if ischar(meshName)
                 meshName = string(meshName);
             end
@@ -262,7 +266,9 @@ classdef Participant < handle
                 dataName = string(dataName);
             end
             inSize = length(valueIndices);
+            disp(['Participant: Im in readData 3, meshName: ', meshName, ', dataName: ', dataName, ', valueIndices: ', valueIndices, ', relativeReadTime: ', relativeReadTime, ', inSize: ', inSize])
             values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
+            disp(['Participant: Im in readData 4, values: ', values])
         end
 
         % requiresGradientDataFor
