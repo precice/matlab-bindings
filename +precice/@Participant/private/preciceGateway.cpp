@@ -305,11 +305,16 @@ public:
             }
             case FunctionID::writeData:
             {
+                std::cout << "Gateway: writeData" << std::endl;
                 const std::string meshName = convertToString(inputs[1]);
                 const std::string dataName = convertToString(inputs[2]);
+                std::cout << "Gateway: writeData: dataName = " << dataName << std::endl;
                 const std::vector<int> vertexIDs = convertToIntVector(inputs[3]);
+                std::cout << "Gateway: writeData: vertexIDs.size() = " << vertexIDs.size() << std::endl;
                 const std::vector<double> values = convertToDoubleVector(inputs[4]);
+                std::cout << "Gateway: writeData: values.size() = " << values.size() << std::endl;
                 interface->writeData(meshName,dataName,vertexIDs,values);
+                std::cout << "Gateway: writeData: done" << std::endl;
                 break;
             }
             case FunctionID::readData:
@@ -322,7 +327,7 @@ public:
                 const TypedArray<double> relativeReadTime = inputs[5];
                 std::vector<double> values(size[0]*dim);
                 interface->readData(meshName,dataName,vertexIDs,relativeReadTime[0],values);
-                outputs[0] = factory.createArray<double>({size[0], dim}, values.data(), values.data()+values.size());
+                outputs[0] = factory.createArray<double>({1, size[0]*dim}, values.data(), values.data()+values.size());
                 // debug:
                 std::cout << "Gateway: values: ";
                 for (size_t i=0; i<values.size(); ++i)

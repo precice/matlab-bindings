@@ -61,10 +61,14 @@ classdef Participant < handle
         %% Status queries
         % getMeshDimensions
         function dims = getMeshDimensions(obj,meshName)
+            disp('Participant: Getting mesh dimensions')
             if ischar(meshName)
                 meshName = string(meshName);
             end
+            disp(meshName)
             dims = preciceGateway(uint8(20),meshName);
+            disp('Participant: Got mesh dimensions')
+            disp(dims)
         end
         
         % getDataDimensions
@@ -235,20 +239,26 @@ classdef Participant < handle
         %% Data Access
         % writeData
         function writeData(obj,meshName,dataName,valueIndices,values)
+            disp('Participant: Im in writeData')
             if ~isa(valueIndices,'int32')
                 warning('valueIndices should be allocated as int32 to prevent copying.');
                 valueIndices = int32(valueIndices);
             end
+            disp('Participant: Im in writeData 1.5')
             if ischar(meshName)
                 meshName = string(meshName);
             end
+            disp('Participant: Im in writeData 1.75')
             if ischar(dataName)
                 dataName = string(dataName);
             end
-
+            disp('Participant: Im in writeData 1.9')
             obj.checkDimensions(size(values, 2), inSize)
+            disp('Participant: Im in writeData 1.95')
             obj.checkDimensions(size(values, 1), obj.getMeshDimensions(meshName))
+            disp('Participant: Im in writeData 2')
             preciceGateway(uint8(60),meshName,dataName,valueIndices,values);
+            disp('Participant: Im in writeData 3')
         end
         
         % readData
@@ -269,6 +279,7 @@ classdef Participant < handle
             disp(['Participant: Im in readData 3, meshName: ', meshName, ', dataName: ', dataName, ', valueIndices: ', valueIndices, ', relativeReadTime: ', relativeReadTime, ', inSize: ', inSize])
             values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
             disp(['Participant: Im in readData 4, values: ', values])
+            disp(size(values))
         end
 
         % requiresGradientDataFor
@@ -319,7 +330,9 @@ classdef Participant < handle
         %% Helper functions
         % Check for dxn convention
         function checkDimensions(obj, a, b)
-            assert(a ==  b, 'The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            if a ~= b
+                error('The shape of the matrices must be [dim numVertices], where dim is the problem dimension');
+            end
         end
     end
 end
