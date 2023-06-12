@@ -49,38 +49,34 @@ function solverdummy(configFileName,participantName)
     end
     
     vertexIDs = interface.setMeshVertices(meshName, vertices);
-
+    
     if interface.requiresInitialData()
         disp("DUMMY: Writing initial data.")
     end
     
     interface.initialize();
-    disp('DUMMY: Initialized MATLAB solverdummy.')
     
     while(interface.isCouplingOngoing())
-        disp('DUMMY: Starting a new coupling iteration.')
         if interface.requiresWritingCheckpoint()
             disp('DUMMY: Writing iteration checkpoint.')
         end
         
         dt = interface.getMaxTimeStepSize();
-        disp(['DUMMY:   dt: ', num2str(dt)])
+
         readData = interface.readData(meshName, readDataName, vertexIDs, dt);
-        disp(['DUMMY:   readData: ', num2str(readData)])
+
         writeData = readData + 1;
-        disp(['DUMMY:   writeData: ', num2str(writeData)])
+
         interface.writeData(meshName, writeDataName, vertexIDs, writeData);
-        disp('DUMMY:   wrote data.')
+
         interface.advance(dt);
-        disp('DUMMY:   advanced.')
+
         if interface.requiresReadingCheckpoint()
             disp('DUMMY: Reading iteration checkpoint.')
         else
             disp('DUMMY: Advancing in time.')
         end
-        disp('DUMMY: Finished coupling iteration.')
     end
     
     interface.finalize();
-    disp('DUMMY: Closing MATLAB solverdummy.')
 end

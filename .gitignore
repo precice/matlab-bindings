@@ -1,4 +1,7 @@
 **.log
-**events.json
+**.json
 **.mexa64
 **matlab-installer.zip
+.vscode
+*.mat
+*.png
