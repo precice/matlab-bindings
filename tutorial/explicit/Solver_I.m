@@ -44,6 +44,7 @@ while t < t_max
     I0 = I_ode(end);
     
     % Exchange data
+    disp(I0)
     interface.writeData(meshName, DataNameI, vertex_ID, I0);
     interface.advance(dt);
 

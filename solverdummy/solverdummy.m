@@ -66,7 +66,7 @@ function solverdummy(configFileName,participantName)
         readData = interface.readData(meshName, readDataName, vertexIDs, dt);
 
         writeData = readData + 1;
-
+        disp(writeData)
         interface.writeData(meshName, writeDataName, vertexIDs, writeData);
 
         interface.advance(dt);

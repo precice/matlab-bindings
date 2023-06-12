@@ -82,7 +82,6 @@ public:
     MexFunction(): constructed{false}, factory{}, interface{NULL} {}
 
     void operator()(ArgumentList outputs, ArgumentList inputs) {
-        std::cout << "Gateway: MexFunction called" << std::endl;
         // Get the function ID from the input
         TypedArray<uint8_t> functionIDArray = inputs[0];
         FunctionID functionID = static_cast<FunctionID>(static_cast<int>(functionIDArray[0]));
@@ -318,7 +317,7 @@ public:
                 const std::string dataName = convertToString(inputs[2]);
                 const TypedArray<int32_t> size = inputs[3];
                 const std::vector<int32_t> vertexIDs = convertToIntVector(inputs[4]);
-                size_t dim = interface->getMeshDimensions(meshName);
+                size_t dim = interface->getDataDimensions(meshName,dataName);
                 const TypedArray<double> relativeReadTime = inputs[5];
                 std::vector<double> values(size[0]*dim);
                 interface->readData(meshName,dataName,vertexIDs,relativeReadTime[0],values);
@@ -365,7 +364,6 @@ public:
                 myMexPrint("An unknown ID was passed.");
                 return;
         }
-        std::cout << "Gateway: Function executed." << std::endl;
         // Do error handling
         // myMexPrint("A problem occurred while executing the function.");
     }

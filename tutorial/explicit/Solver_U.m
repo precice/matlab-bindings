@@ -30,6 +30,7 @@ if interface.requiresInitialData()
     interface.writeData(meshName, DataNameU, vertex_ID, U0);
 end
 interface.initialize();
+dt = interface.getMaxTimeStepSize();
 
 % Start simulation
 t = t0 + dt;

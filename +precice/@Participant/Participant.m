@@ -243,9 +243,13 @@ classdef Participant < handle
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            inSize = size(valueIndices,2);
-            obj.checkDimensions(size(values, 2), inSize)
-            obj.checkDimensions(size(values, 1), obj.getMeshDimensions(meshName))
+            inSize = numel(valueIndices);
+            if obj.getDataDimensions(meshName,dataName) == 1 % scalar data
+                obj.checkDimensions(size(values, 1), inSize)
+            else % vector data
+                obj.checkDimensions(size(values, 2), inSize)
+                obj.checkDimensions(size(values, 1), obj.getDataDimensions(meshName,dataName))
+            end
             preciceGateway(uint8(60),meshName,dataName,valueIndices,values);
         end
         
@@ -263,7 +267,7 @@ classdef Participant < handle
             end
             inSize = length(valueIndices);
             values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
-            values = reshape(values,obj.getMeshDimensions(meshName),inSize)';
+            values = reshape(values,obj.getDataDimensions(meshName,dataName),[]);
         end
 
         % requiresGradientDataFor
@@ -289,8 +293,12 @@ classdef Participant < handle
             if ischar(dataName)
                 dataName = string(dataName);
             end
-            obj.checkDimensions(size(gradientValues, 2), inSize)
-            obj.checkDimensions(size(gradientValues, 1), obj.getMeshDimensions(meshName) * obj.getMeshDimensions(meshName))
+            if obj.getDataDimensions(meshName,dataName) == 1 % scalar data
+                obj.checkDimensions(size(gradientValues, 1), numel(valueIndices) * obj.getMeshDimensions(meshName))
+            else % vector data
+                obj.checkDimensions(size(gradientValues, 2), numel(valueIndices) * obj.getMeshDimensions(meshName))
+                obj.checkDimensions(size(gradientValues, 1), obj.getDataDimensions(meshName))
+            end
             preciceGateway(uint8(63),meshName,dataName,valueIndices,gradientValues);
         end
 
