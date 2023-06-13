@@ -1,6 +1,14 @@
 name: 'Test MATLAB bindings'
 
-on: [push,pull_request]
+on: 
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - "*"
+
 jobs:
   test-solverdummies:
     name: Test MATLAB solverdummmies
