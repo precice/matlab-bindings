@@ -1,7 +1,7 @@
 clear; close all; clc;
 
 % Initialize and configure preCICE
-interface = precice.SolverInterface("SolverU", "precice-config.xml", 0, 1);
+interface = precice.Participant("ParticipantU", "precice-config.xml", 0, 1);
 
 % Geometry IDs. As it is a 0-D simulation, only one vertex is necessary.
 meshName = "MeshU";
@@ -27,22 +27,25 @@ f_U = @(t, U, I) -I/C;      % Time derivative of U
 
 % Initialize simulation
 if interface.requiresInitialData()
-    interface.writeScalarData(meshName, DataNameU, vertex_ID, U0);
+    interface.writeData(meshName, DataNameU, vertex_ID, U0);
 end
-dt = interface.initialize();
+interface.initialize();
+dt = interface.getMaxTimeStepSize();
 
 % Start simulation
 t = t0 + dt;
-while t < t_max;
+while t < t_max
 
     % Make simulation step
     [t_ode, U_ode] = ode45(@(t, y) f_U(t, y, I0), [t0 t], U0);
     U0 = U_ode(end);
 
     % Exchange data
-    interface.writeScalarData(meshName, DataNameU, vertex_ID, U0);
-    dt = interface.advance(dt);
-    I0 = interface.readScalarData(meshName, DataNameI, vertex_ID);
+    interface.writeData(meshName, DataNameU, vertex_ID, U0);
+    interface.advance(dt);
+
+    dt = interface.getMaxTimeStepSize();
+    I0 = interface.readData(meshName, DataNameI, vertex_ID, dt);
 
     % Finish time step
     t0 = t;

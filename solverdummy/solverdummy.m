@@ -12,15 +12,15 @@ function solverdummy(configFileName,participantName)
     end
     
     if (strcmp(participantName, 'SolverOne'))
-        writeDataName = 'dataOne';
-        readDataName = 'dataTwo';
-        meshName = 'MeshOne';
+        writeDataName = 'Data-One';
+        readDataName = 'Data-Two';
+        meshName = 'SolverOne-Mesh';
     end
     
     if (strcmp(participantName, 'SolverTwo'))
-        readDataName = 'dataOne';
-        writeDataName = 'dataTwo';
-        meshName = 'MeshTwo';
+        readDataName = 'Data-One';
+        writeDataName = 'Data-Two';
+        meshName = 'SolverTwo-Mesh';
     end
     
     numVertices = 3;
@@ -29,12 +29,12 @@ function solverdummy(configFileName,participantName)
     disp(['DUMMY:   configFileName: ', configFileName])
     disp(['DUMMY:   participantName: ', participantName])
     
-    solverProcessIndex = 0;
-    solverProcessSize = 1;
+    ProcessIndex = 0;
+    ProcessSize = 1;
     
-    interface = precice.SolverInterface(participantName, configFileName, solverProcessIndex, solverProcessSize);
+    interface = precice.Participant(participantName, configFileName, ProcessIndex, ProcessSize);
     
-    dims = interface.getDimensions();
+    dims = interface.getMeshDimensions(meshName);
     
     vertices(dims, numVertices) = 0;
     readData(dims, numVertices) = 0;
@@ -50,21 +50,27 @@ function solverdummy(configFileName,participantName)
     
     vertexIDs = interface.setMeshVertices(meshName, vertices);
     
-    dt = interface.initialize();
+    if interface.requiresInitialData()
+        disp("DUMMY: Writing initial data.")
+    end
+    
+    interface.initialize();
     
     while(interface.isCouplingOngoing())
         if interface.requiresWritingCheckpoint()
             disp('DUMMY: Writing iteration checkpoint.')
         end
         
-        readData = interface.readBlockVectorData(meshName, readDataName, vertexIDs);
-        
+        dt = interface.getMaxTimeStepSize();
+
+        readData = interface.readData(meshName, readDataName, vertexIDs, dt);
+
         writeData = readData + 1;
-        
-        interface.writeBlockVectorData(meshName, writeDataName, vertexIDs, writeData);
-        
-        dt = interface.advance(dt);
-        
+        disp(writeData)
+        interface.writeData(meshName, writeDataName, vertexIDs, writeData);
+
+        interface.advance(dt);
+
         if interface.requiresReadingCheckpoint()
             disp('DUMMY: Reading iteration checkpoint.')
         else
@@ -73,5 +79,4 @@ function solverdummy(configFileName,participantName)
     end
     
     interface.finalize();
-    disp('DUMMY: Closing MATLAB solverdummy.')
 end

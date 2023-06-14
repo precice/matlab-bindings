@@ -1,7 +1,7 @@
 clear; close all; clc;
 
 % Initialize and configure preCICE
-interface = precice.SolverInterface("SolverU", "precice-config.xml", 0, 1);
+interface = precice.Participant("ParticipantU", "precice-config.xml", 0, 1);
 
 % Geometry IDs. As it is a 0-D simulation, only one vertex is necessary.
 meshName ="MeshU";
@@ -27,9 +27,10 @@ f_U = @(t, U, I) -I/C;      % Time derivative of U
 
 % Initialize simulation
 if interface.requiresInitialData()
-    interface.writeScalarData(meshName, DataNameU, vertex_ID, U0);
+    interface.writeData(meshName, DataNameU, vertex_ID, U0);
 end
-dt = interface.initialize();
+interface.initialize();
+dt = interface.getMaxTimeStepSize();
 
 % Start simulation
 t = t0 + dt;
@@ -46,15 +47,16 @@ while interface.isCouplingOngoing()
     U0 = U_ode(end);
 
     % Exchange data
-    interface.writeScalarData(meshName, dataNameU, vertex_ID, U0);
-    dt = interface.advance(dt);
+    interface.writeData(meshName, dataNameU, vertex_ID, U0);
+    interface.advance(dt);
 
     % Recover checkpoint if not converged, else finish time step
     if interface.requiresReadingCheckpoint()
         I0 = I0_checkpoint;
         U0 = U0_checkpoint;
     else
-        I0 = interface.readScalarData(meshName, dataNameI, vertex_ID);
+        dt = interface.getMaxTimeStepSize();
+        I0 = interface.readData(meshName, dataNameI, vertex_ID, dt);
         t0 = t;
         t = t0 + dt;
     end
