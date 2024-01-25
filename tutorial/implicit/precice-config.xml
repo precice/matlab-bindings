@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 
-<precice-configuration dimensions="2">
+<precice-configuration>
 
   <data:scalar name="I"  />
   <data:scalar name="U"  />
 
-  <mesh name="MeshI">
+  <mesh name="MeshI" dimensions="2">
     <use-data name="I" />
     <use-data name="U" />
   </mesh>
 
-  <mesh name="MeshU">
+  <mesh name="MeshU" dimensions="2">
     <use-data name="U" />
     <use-data name="I" />
   </mesh>
@@ -37,7 +37,7 @@
       direction="read" from="MeshI" to="MeshU" constraint="consistent"/>
   </participant>
 
-  <m2n:sockets from="ParticipantI" to="ParticipantU"/>
+  <m2n:sockets acceptor="ParticipantI" connector="ParticipantU"/>
   
   <coupling-scheme:serial-implicit> 
     <participants first="ParticipantI" second="ParticipantU" /> 
@@ -48,5 +48,4 @@
     <exchange data="I" mesh="MeshI" from="ParticipantI" to="ParticipantU"/>
     <exchange data="U" mesh="MeshU" from="ParticipantU" to="ParticipantI"/>
   </coupling-scheme:serial-implicit>     
-
 </precice-configuration>
