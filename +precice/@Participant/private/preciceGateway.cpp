@@ -27,8 +27,6 @@ enum class FunctionID {
     requiresReadingCheckpoint = 26,
     requiresWritingCheckpoint = 27,
     
-    hasMesh = 40,
-    hasData = 41,
     requiresMeshConnectivityFor = 42,
     setMeshVertex = 43,
     setMeshVertices = 44,
@@ -187,21 +185,6 @@ public:
             {
                 bool result = interface->requiresWritingCheckpoint();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
-                break;
-            }
-            case FunctionID::hasMesh:
-            {
-                const std::string meshName = convertToString(inputs[1]);
-                bool output = interface->hasMesh(meshName);
-                outputs[0] = factory.createScalar<bool>(output);
-                break;
-            }
-            case FunctionID::hasData:
-            {
-                const std::string meshName = convertToString(inputs[1]);
-                const std::string dataName = convertToString(inputs[2]);
-                bool output = interface->hasData(meshName,dataName);
-                outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             case FunctionID::requiresMeshConnectivityFor:
