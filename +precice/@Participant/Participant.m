@@ -290,8 +290,8 @@ classdef Participant < handle
             preciceGateway(uint8(64),meshName,boundingBox);
         end
 
-        % getMeshVerticesAndIDs
-        function [vertices, outIDs] = getMeshVerticesAndIDs(meshName)
+        % getMeshVertexIDsAndCoordinates
+        function [vertices, outIDs] = getMeshVertexIDsAndCoordinates(meshName)
             if ischar(meshName)
                 meshName = string(meshName);
             end
