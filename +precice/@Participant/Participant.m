@@ -106,26 +106,6 @@ classdef Participant < handle
             bool = preciceGateway(uint8(27));
         end
 
-        %% Mesh Access
-        % hasMesh
-        function bool = hasMesh(obj,meshName)
-            if ischar(meshName)
-                meshName = string(meshName);
-            end
-            bool = preciceGateway(uint8(40),meshName);
-        end
-
-        % hasData
-        function bool = hasData(obj,meshName,dataName)
-            if ischar(meshName)
-                meshName = string(meshName);
-            end
-            if ischar(dataName)
-                dataName = string(dataName);
-            end
-            bool = preciceGateway(uint8(41),meshName,dataName);
-        end
-
         % requiresMeshConnectivityFor
         function bool = requiresMeshConnectivityFor(obj,meshName)
             if ischar(meshName)
@@ -310,8 +290,8 @@ classdef Participant < handle
             preciceGateway(uint8(64),meshName,boundingBox);
         end
 
-        % getMeshVerticesAndIDs
-        function [vertices, outIDs] = getMeshVerticesAndIDs(meshName)
+        % getMeshVertexIDsAndCoordinates
+        function [vertices, outIDs] = getMeshVertexIDsAndCoordinates(meshName)
             if ischar(meshName)
                 meshName = string(meshName);
             end

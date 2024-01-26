@@ -27,8 +27,6 @@ enum class FunctionID {
     requiresReadingCheckpoint = 26,
     requiresWritingCheckpoint = 27,
     
-    hasMesh = 40,
-    hasData = 41,
     requiresMeshConnectivityFor = 42,
     setMeshVertex = 43,
     setMeshVertices = 44,
@@ -47,7 +45,7 @@ enum class FunctionID {
     requiresGradientDataFor = 62,
     writeGradientData = 63,
     setMeshAccessRegion = 64,
-    getMeshVerticesAndIDs = 65,
+    getMeshVertexIDsAndCoordinates = 65,
 };
 
 
@@ -187,21 +185,6 @@ public:
             {
                 bool result = interface->requiresWritingCheckpoint();
                 outputs[0] = factory.createArray<bool>({1,1}, {result});
-                break;
-            }
-            case FunctionID::hasMesh:
-            {
-                const std::string meshName = convertToString(inputs[1]);
-                bool output = interface->hasMesh(meshName);
-                outputs[0] = factory.createScalar<bool>(output);
-                break;
-            }
-            case FunctionID::hasData:
-            {
-                const std::string meshName = convertToString(inputs[1]);
-                const std::string dataName = convertToString(inputs[2]);
-                bool output = interface->hasData(meshName,dataName);
-                outputs[0] = factory.createScalar<bool>(output);
                 break;
             }
             case FunctionID::requiresMeshConnectivityFor:
@@ -348,13 +331,13 @@ public:
                 interface->setMeshAccessRegion(meshName,boundingBox);
                 break;
             }
-            case FunctionID::getMeshVerticesAndIDs:
+            case FunctionID::getMeshVertexIDsAndCoordinates:
             {
                 const std::string meshName = convertToString(inputs[1]);
                 const TypedArray<int32_t> size = inputs[2];
                 std::vector <int32_t> ids(size[0]);
                 std::vector <double> positions(size[0]*3);
-                interface->getMeshVerticesAndIDs(meshName,ids,positions);
+                interface->getMeshVertexIDsAndCoordinates(meshName,ids,positions);
                 outputs[0] = factory.createArray<int32_t>({size[0]}, ids.data(), ids.data()+ids.size());
                 outputs[1] = factory.createArray<double>({size[0], 3}, positions.data(), positions.data()+positions.size());
                 break;
