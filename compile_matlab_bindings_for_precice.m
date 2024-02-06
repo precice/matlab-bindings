@@ -4,8 +4,7 @@
 % the current file. Thus, the script will work even if the user calls it
 % from a different folder
 path = string(fileparts(mfilename('fullpath')));
-path_Interface = strjoin([path,"+precice","@SolverInterface","private","preciceGateway"],filesep);
-path_Constants = strjoin([path,"+precice","+constants","private","preciceGateway"],filesep);
+path_Interface = strjoin([path,"+precice","@Participant","private","preciceGateway"],filesep);
 path_namespace_precice = strjoin([path, "+precice", "private", "preciceGateway"],filesep);
 
 % Get the flags for linking to preCICE
@@ -16,11 +15,5 @@ end
 flags = strsplit(flags);
 
 % Run mex commands to compile
-mex(strcat(path_Interface,".cpp"),"-output",path_Interface,flags{:});
-mex(strcat(path_Constants,".cpp"),"-output",path_Constants,flags{:});
-mex(strcat(path_namespace_precice,".cpp"),"-output",path_namespace_precice,flags{:});
-
-%mex ~/precice/src/precice/bindings/matlab/+precice/@SolverInterface/private/preciceGateway.cpp -output ...
-%    ~/precice/src/precice/bindings/matlab/+precice/@SolverInterface/private/preciceGateway -lprecice;
-%mex ~/precice/src/precice/bindings/matlab/+precice/@Constants/private/preciceConstants.cpp -output ...
-%    ~/precice/src/precice/bindings/matlab/+precice/@Constants/private/preciceConstants -lprecice;
+mex(strcat(path_Interface,".cpp"),'CXXFLAGS="-std=c++17 -fPIC"',"-output",path_Interface,flags{:});
+mex(strcat(path_namespace_precice,".cpp"),'CXXFLAGS="-std=c++17 -fPIC"',"-output",path_namespace_precice,flags{:});

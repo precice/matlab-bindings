@@ -2,53 +2,48 @@
 
 <precice-configuration>
 
-  <solver-interface dimensions="2" >
-   
-    <data:scalar name="I"  />
-    <data:scalar name="U"  />
+  <data:scalar name="I"  />
+  <data:scalar name="U"  />
 
-    <mesh name="MeshI">
-      <use-data name="I" />
-      <use-data name="U" />
-    </mesh>
+  <mesh name="MeshI" dimensions="2">
+    <use-data name="I" />
+    <use-data name="U" />
+  </mesh>
 
-    <mesh name="MeshU">
-      <use-data name="U" />
-      <use-data name="I" />
-    </mesh>
+  <mesh name="MeshU" dimensions="2">
+    <use-data name="U" />
+    <use-data name="I" />
+  </mesh>
 
-    <participant name="SolverI">
-      <use-mesh name="MeshI" provide="yes"/>
-      <use-mesh name="MeshU" from="SolverU"/>
-      <write-data name="I"     mesh="MeshI" />
-      <read-data  name="U" mesh="MeshI" />
-      <mapping:nearest-neighbor
-        direction="write" from="MeshI" to="MeshU" constraint="consistent"/>
-      <mapping:nearest-neighbor
-        direction="read" from="MeshU" to="MeshI" constraint="consistent"/>
-    </participant>
+  <participant name="ParticipantI">
+    <provide-mesh name="MeshI"/>
+    <receive-mesh name="MeshU" from="ParticipantU"/>
+    <write-data name="I"     mesh="MeshI" />
+    <read-data  name="U" mesh="MeshI" />
+    <mapping:nearest-neighbor
+      direction="write" from="MeshI" to="MeshU" constraint="consistent"/>
+    <mapping:nearest-neighbor
+      direction="read" from="MeshU" to="MeshI" constraint="consistent"/>
+  </participant>
 
-    <participant name="SolverU">
-      <use-mesh name="MeshU" provide="yes"/>
-      <use-mesh name="MeshI" from="SolverI"/>
-      <write-data name="U"     mesh="MeshU" />
-      <read-data  name="I" mesh="MeshU" />
-      <mapping:nearest-neighbor
-        direction="write" from="MeshU" to="MeshI" constraint="consistent"/>
-      <mapping:nearest-neighbor
-        direction="read" from="MeshI" to="MeshU" constraint="consistent"/>
-    </participant>
+  <participant name="ParticipantU">
+    <provide-mesh name="MeshU"/>
+    <receive-mesh name="MeshI" from="ParticipantI"/>
+    <write-data name="U"     mesh="MeshU" />
+    <read-data  name="I" mesh="MeshU" />
+    <mapping:nearest-neighbor
+      direction="write" from="MeshU" to="MeshI" constraint="consistent"/>
+    <mapping:nearest-neighbor
+      direction="read" from="MeshI" to="MeshU" constraint="consistent"/>
+  </participant>
 
-    <m2n:sockets from="SolverI" to="SolverU"/>
-    
-    <coupling-scheme:serial-explicit>
-      <participants first="SolverI" second="SolverU" /> 
-      <max-time-windows value="1000" />
-      <time-window-size value="0.01" />
-      <exchange data="I" mesh="MeshI" from="SolverI" to="SolverU"/>
-      <exchange data="U" mesh="MeshU" from="SolverU" to="SolverI"/>
-    </coupling-scheme:serial-explicit>
-    
-  </solver-interface>
-
+  <m2n:sockets acceptor="ParticipantI" connector="ParticipantU"/>
+  
+  <coupling-scheme:serial-explicit>
+    <participants first="ParticipantI" second="ParticipantU" /> 
+    <max-time-windows value="1000" />
+    <time-window-size value="0.01" />
+    <exchange data="I" mesh="MeshI" from="ParticipantI" to="ParticipantU"/>
+    <exchange data="U" mesh="MeshU" from="ParticipantU" to="ParticipantI"/>
+  </coupling-scheme:serial-explicit>
 </precice-configuration>

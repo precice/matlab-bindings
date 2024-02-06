@@ -10,7 +10,7 @@ The release of the `matlab-bindings` repository is made from a release branch ca
 3. Bump the version in the following places:
 
     * `Contents.m` on `matlab-bindings-v2.1.1.1`.
-    * `test.yml` and `action.yml` on `matlab-bindings-v2.1.1.1`.
+    * `test.yml` on `matlab-bindings-v2.1.1.1`.
 
 4. [Draft a New Release](https://github.com/precice/matlab-bindings/releases/new) in the `Releases` section of the repository page in a web browser. The release tag needs to be the exact version number (i.e.`v2.1.1.1` or `v2.1.1.1rc1`, compare to [existing tags](https://github.com/precice/python-bindings/tags)). Use `@target:master`. Release title is also the version number (i.e. `v2.1.1.1` or `v2.1.1.1rc1`, compare to [existing releases](https://github.com/precice/matlab-bindings/tags)). 
 
