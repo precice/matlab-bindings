@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <string_view>
-#include "precice/Participant.hpp"
+#include "precice/precice.hpp"
 
 using namespace matlab::data;
 using matlab::mex::ArgumentList;
@@ -336,7 +336,8 @@ public:
                 const std::string meshName = convertToString(inputs[1]);
                 const TypedArray<int32_t> size = inputs[2];
                 std::vector <int32_t> ids(size[0]);
-                std::vector <double> positions(size[0]*3);
+                size_t dim = interface->getMeshDimensions(meshName);
+                std::vector <double> positions(size[0]*dim);
                 interface->getMeshVertexIDsAndCoordinates(meshName,ids,positions);
                 outputs[0] = factory.createArray<int32_t>({size[0]}, ids.data(), ids.data()+ids.size());
                 outputs[1] = factory.createArray<double>({size[0], 3}, positions.data(), positions.data()+positions.size());
