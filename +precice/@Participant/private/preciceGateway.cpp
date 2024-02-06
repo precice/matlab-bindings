@@ -340,7 +340,7 @@ public:
                 std::vector <double> positions(size[0]*dim);
                 interface->getMeshVertexIDsAndCoordinates(meshName,ids,positions);
                 outputs[0] = factory.createArray<int32_t>({size[0]}, ids.data(), ids.data()+ids.size());
-                outputs[1] = factory.createArray<double>({size[0], 3}, positions.data(), positions.data()+positions.size());
+                outputs[1] = factory.createArray<double>({size[0], dim}, positions.data(), positions.data()+positions.size());
                 break;
             } 
 
