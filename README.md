@@ -2,7 +2,7 @@
 
 These bindings allow to use preCICE with MATLAB based on the C++ MEX and C data API. They are still in an experimental state, so please utilize them with care. Any feedback is welcome.
 
-Note that the first three digits of the version number of the bindings indicate the preCICE version that the bindings support. The last digit represents the version of the bindings. Example: `v2.0.0.1` of the bindings represents version `1` of the bindings which is compatible with preCICE `v2.0.0`.
+Note that the first two digits of the version number of the bindings indicate the major and minor version of the preCICE version that the bindings support. The last digit represents the version of the bindings. Example: `v3.1.0` and `v3.1.1` of the bindings represent versions `0` and `1` of the bindings that are compatible with preCICE `v3.1.x`. Note that this versioning scheme was introduced from bindings `v3.1.0`, which is different than the [old versioning scheme](#old-versioning-scheme).
 
 ## Requirements
 
@@ -19,7 +19,8 @@ MATLAB R2018a or later is required. The bindings are actively tested on versions
 The MATLAB script `compile_matlab_bindings_for_precice.m` located in this folder compiles the bindings. Simply running it from MATLAB should do.
 
 In some cases, MATLAB's own `libstdc++` library may be an old version, which leads an error while compiling the bindings, of the kind "version 'CXXABI_1.3.11' not found". In this case, one can set MATLAB to use another version of `libstdc++` with the `LD_PRELOAD` variable (see [here](https://alexxunxu.wordpress.com/2018/01/15/version-cxxabi_1-3-8-not-found/) for further reference). For example, for using the system's default `libstdc++`, one can open MATLAB with the following command:
-```
+
+```bash
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
 ```
 
@@ -36,6 +37,7 @@ To use the bindings, you have to add this folder (e.g. `/home/user/matlab-bindin
 The API introduces a MATLAB wrapper class for the `SolverInterface` class and a namespace for the preCICE constants. They are accessible in MATLAB as `precice.SolverInterface` and `precice.constants` respectively.
 
 The function syntax is mostly identical to the syntax of the C++ API. The following things should be noted:
+
 - C++ `int`s correspond to MATLAB `int32`s.
 - Wherever the C++ API expects pointers, the MATLAB API expects a matrix/vector instead. If the user wants to pass vector data (e.g. vertex coordinates) for multiple vertices, the shape of the corresponding matrix must be `[dim numVertices]`, where `dim` is the problem dimension. Thus, each **column** must correspond to a vertex, and each line must correspond to a coordinate - **not** vice versa. Users should try to respect this in their MATLAB code from the start, because transposing can be costly for huge matrices.
 - There are two changes in the input arguments for the MATLAB API with respect to the C++ API: 
@@ -43,11 +45,14 @@ The function syntax is mostly identical to the syntax of the C++ API. The follow
     - As the MATLAB API receives matrices/vectors instead of pointers, the size (e.g. number of vertices) of the arrays is not an input argument, but instead it is inferred from the array.
 
 As an example, the C++ API function
-```
+
+```bash
 readBlockScalarData(int dataID, int size, const int *valueIndices, double *values)
 ```
+
 is found in the MATLAB bindings as
-```
+
+```bash
 values = readBlockScalarData(dataID, valueIndices)
 ```
 
@@ -55,24 +60,25 @@ values = readBlockScalarData(dataID, valueIndices)
 
 The C++ MEX API supports [out of process execution](https://de.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html) of MEX functions. This feature is implemented in the class `precice.SolverInterfaceOOP`. This class works exactly like `precice.SolverInterface`. Internally, however, the gateway function that calls the preCICE routines is run on a `mexHost` object.
 This has the following advantages:
+
 - Multiple instances of `SolverInterfaceOOP` can exist at the same time.
 - If the gateway function crashes, then MATLAB will not crash. Only the mexHost object will crash.
 However, using the OOP variant is **significantly** slower than the normal in process
 
-# Troubleshooting
+## Troubleshooting
 
 ## `libprecice.so` cannot be found
 
-```
+```bash
 Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
 libprecice.so.2: cannot open shared object file: No such file or directory.
 ```
 
-Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://precice.org/installation-source-installation.html#testing-your-installation). 
+Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://precice.org/installation-source-installation.html#testing-your-installation).
 
 You can also run `pkg-config --cflags --libs libprecice` to see whether the paths provided by `pkg-config` point to the correct place. Example output, if everything is correct and you installed preCICE via `sudo make install`:
 
-```
+```bash
 $ pkg-config --cflags --libs libprecice
 -I/usr/local/include -L/usr/local/lib -lprecice
 ```
@@ -81,7 +87,7 @@ If everything until this point looks good and you are still facing problems and 
 
 ## version \`GLIBCXX_3.4.26' not found
 
-```
+```bash
 Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
 /usr/local/MATLAB/R2021a/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6:
 version `GLIBCXX_3.4.26' not found (required by /lib/x86_64-linux-gnu/libprecice.so.2)
@@ -97,11 +103,14 @@ To solve this error start matlab with the following command:
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
 ```
 
+## Old versioning scheme
 
-# Contributors
+Bindings versions up to `v3.0.0.0` have four digits, where the first three digits are the supported preCICE version, and the fourth digit is the bindings version. Example: `v2.0.0.1` and `v2.0.0.2` of the bindings represent versions `1` and `2` of the bindings that are compatible with preCICE `v2.0.0`. We dropped the third digit of the preCICE version as bugfix releases are always compatible and do not impact the bindings. The new three digit format is now consistent with other preCICE bindings.
 
-* [Dominik Volland](https://github.com/Dominanz) contributed first working prototype in [PR #494 on `precice/precice`](https://github.com/precice/precice/pull/494)
-* [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
-* [Benjamin Rodenberg](https://github.com/BenjaminRodenberg)
-* [Frédéric Simonis](https://github.com/fsimonis)
-* [Erik Scheurer](https://github.com/erikscheurer) contributed automated CI tests.
+## Contributors
+
+- [Dominik Volland](https://github.com/Dominanz) contributed first working prototype in [PR #494 on `precice/precice`](https://github.com/precice/precice/pull/494)
+- [Gilberto Lem](https://github.com/gilbertolem) integrated bindings into existing infrastructure of preCICE in [PR #580 on `precice/precice`](https://github.com/precice/precice/pull/580)
+- [Benjamin Rodenberg](https://github.com/BenjaminRodenberg)
+- [Frédéric Simonis](https://github.com/fsimonis)
+- [Erik Scheurer](https://github.com/erikscheurer) contributed automated CI tests.
