@@ -1,0 +1,1 @@
+dlmwrite(fullfile(userpath,'startup.m'), char(addcmd), '-append', 'delimiter', '')
