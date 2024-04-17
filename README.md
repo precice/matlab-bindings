@@ -85,7 +85,7 @@ $ pkg-config --cflags --libs libprecice
 
 If everything until this point looks good and you are still facing problems and you installed preCICE to a custom location using `CMAKE_INSTALL_PREFIX`, MATLAB might not be able to find `libprecice.so`, since it is not discoverable. Please add the location of `libprecice.so` (see `pkg-config --libs-only-L libprecice`, without the `-L`) to your `LD_LIBRARY_PATH`. For further instructions refer to the [MATLAB documentation](https://de.mathworks.com/help/matlab/matlab_external/set-run-time-library-path-on-linux-systems.html).
 
-## version \`GLIBCXX_3.4.26' not found
+## version `GLIBCXX_X.X.XX` not found
 
 ```bash
 Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
@@ -93,11 +93,19 @@ Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/pre
 version `GLIBCXX_3.4.26' not found (required by /lib/x86_64-linux-gnu/libprecice.so.2)
 ```
 
-Matlab ships with a version of `libstdc++.so.6` that may be too old. This version does not find the preCICE C++ library. By using the system-provided version of `libstdc++.so.6`, you can fix the error.
+MATLAB ships with a version of `libstdc++.so.6` that may be too old. This version does not find the preCICE C++ library. 
 
-So far, this problem was encountered with Ubuntu Version `20.04.04 LTS`, GNU C++ `9.4.0`, on matlab versions `R2020b`, `R2021a`, `R2021b`.
+So far, this problem was encountered with Ubuntu Version `20.04.04 LTS`, GNU C++ `10.5.0`, on MATLAB versions `R2020b (Update 8)`, `R2021a`, `R2021b (Update 7)`. See https://github.com/precice/matlab-bindings/issues/53 for more details.
 
-To solve this error start matlab with the following command:
+There are two possible solutions:
+
+### (recommended) Update your MATLAB installation
+
+This problem does not appear, for example, for MATLAB R2023b (Update 7). For information on how to update MATLAB, please refer to the MATLAB documentation.
+
+### Set `LD_PRELOAD` to use the system-provided `libstdc++.so.6`
+
+Please start MATLAB with the following command:
 
 ```shell
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
