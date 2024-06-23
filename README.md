@@ -32,7 +32,7 @@ If using the script fails for some reason, please let us know.
 
 To use the bindings, you have to add this folder (e.g. `/home/user/matlab-bindings`) to your MATLAB path using [`addpath`](https://de.mathworks.com/help/matlab/ref/addpath.html?searchHighlight=addpath&s_tid=doc_srchtitle). Adding this folder alone is sufficient (you don't have to use `genpath`). You can let MATLAB do this at startup by adding the respective line to your `startup.m` manually, see [here](https://de.mathworks.com/help/matlab/matlab_env/add-folders-to-matlab-search-path-at-startup.html). 
 
-You can also execute the script `add_matlab_bindings_at_startup.m` while located in the matlab-bindings path. It will add the path to the bindings automatically to the `startup.m` file.
+You can also execute the script `add_matlab_bindings_at_startup.m`. It will add the path to the bindings automatically to the `startup.m` file.
 
 ## Usage
 
