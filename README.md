@@ -34,7 +34,7 @@ To use the bindings, you have to add this folder (e.g. `/home/user/matlab-bindin
 
 ## Usage
 
-The API introduces a MATLAB wrapper class for the `SolverInterface` class and a namespace for the preCICE constants. They are accessible in MATLAB as `precice.Participant` and `precice.constants` respectively.
+The API introduces a MATLAB wrapper class for the `Participant` class and a namespace for the preCICE constants. They are accessible in MATLAB as `precice.Participant` and `precice.constants` respectively.
 
 The function syntax is mostly identical to the syntax of the C++ API. The following things should be noted:
 
