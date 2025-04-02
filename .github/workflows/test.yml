@@ -19,7 +19,8 @@ jobs:
       fail-fast: true
       matrix:
         include:
-        - release: latest
+        # - release: latest
+        - release: R2024a
         # - release: R2023b
         # - release: R2023a
         # - release: R2022b
