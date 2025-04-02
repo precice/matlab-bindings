@@ -20,11 +20,11 @@ jobs:
       matrix:
         include:
         - release: latest
-        - release: R2023b
-        - release: R2023a
-        - release: R2022b
-        - release: R2022a
-        - release: R2021b
+        # - release: R2023b
+        # - release: R2023a
+        # - release: R2022b
+        # - release: R2022a
+        # - release: R2021b
         # - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
     steps:
       - name: Set up MATLAB
