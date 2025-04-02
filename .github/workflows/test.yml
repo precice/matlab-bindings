@@ -13,8 +13,8 @@ jobs:
   test-solverdummies:
     name: Test MATLAB solverdummmies
     runs-on: ubuntu-latest
-    # container: precice/precice:develop # does not work somehow because of sudo
-    # see e.g. https://github.com/precice/matlab-bindings/actions/runs/4366307887/jobs/7636136347
+    container:
+      image: precice/precice:nightly
     strategy:
       fail-fast: true
       matrix:
@@ -27,25 +27,16 @@ jobs:
         - release: R2021b
         # - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
     steps:
-
-      - name: install precice
-        uses: precice/setup-precice-action@main
-        with:
-          precice-version: 'v3.1.0'
-
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
         with: 
           release: ${{ matrix.release }}
-
       - name: Check out repository
         uses: actions/checkout@v3
-
       - name: Run compilation script
         uses: matlab-actions/run-command@v1
         with:
           command: compile_matlab_bindings_for_precice
-
       - name: Run Solverdummies
         shell: bash
         run: |
