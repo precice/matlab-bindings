@@ -33,11 +33,15 @@ jobs:
           release: ${{ matrix.release }}
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Run compilation script & run Solverdummies
+      - name: Run compilation script
+        uses: matlab-actions/run-command@v2
+        with:
+          command: compile_matlab_bindings_for_precice
+      - name: Run Solverdummies
         uses: matlab-actions/run-command@v2
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
         with:
           startup-options: -sd examples/solverdummy
-          command: compile_matlab_bindings_for_precice , addpath('../..'), solverdummy precice-config.xml SolverOne
+          command: addpath('../..'), solverdummy precice-config.xml SolverOne
           # solverdummy precice-config.xml SolverTwo
