@@ -37,11 +37,20 @@ jobs:
         uses: matlab-actions/run-command@v2
         with:
           command: compile_matlab_bindings_for_precice
+      #- name: Run Solverdummies
+      #  uses: matlab-actions/run-command@v2
+      #  env:
+      #    LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
+      #  with:
+      #    startup-options: -sd examples/solverdummy
+      #    command: addpath('../..'), solverdummy precice-config.xml SolverOne
+      #    # solverdummy precice-config.xml SolverTwo
+      # workaround from https://github.com/matlab-actions/run-command/issues/53
+      - name: Get run-matlab-command
+        run: |
+          wget -O /usr/local/bin/run-matlab-command https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v2/glnxa64/run-matlab-command
+          chmod +x /usr/local/bin/run-matlab-command
       - name: Run Solverdummies
-        uses: matlab-actions/run-command@v2
-        env:
-          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
-        with:
-          startup-options: -sd examples/solverdummy
-          command: addpath('../..'), solverdummy precice-config.xml SolverOne
-          # solverdummy precice-config.xml SolverTwo
+        working-directory: examples/solverdummy
+        run: | 
+          run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverOne" && run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverTwo"
