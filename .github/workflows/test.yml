@@ -38,6 +38,6 @@ jobs:
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
         with:
-          startup-option: -sd examples/solverdummy
+          startup-options: -sd examples/solverdummy
           command: compile_matlab_bindings_for_precice , addpath('../..'), solverdummy precice-config.xml SolverOne
           # solverdummy precice-config.xml SolverTwo
