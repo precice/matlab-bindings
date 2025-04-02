@@ -42,8 +42,5 @@ jobs:
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
         with:
-          command: |
-            cd examples/solverdummy
-            addpath('..')
-            solverdummy precice-config.xml SolverOne
-            # solverdummy precice-config.xml SolverTwo
+          command: cd examples/solverdummy, addpath('..'), solverdummy precice-config.xml SolverOne
+          # solverdummy precice-config.xml SolverTwo
