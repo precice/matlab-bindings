@@ -39,6 +39,7 @@ jobs:
           command: compile_matlab_bindings_for_precice
       - name: Run Solverdummies
         uses: matlab-actions/run-command@v2
+        working-directory: examples/solverdummy
         env:
           LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
         with:
