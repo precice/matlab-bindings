@@ -47,13 +47,18 @@ The function syntax is mostly identical to the syntax of the C++ API. The follow
 As an example, the C++ API function
 
 ```bash
-readData(int dataID, int size, const int *valueIndices, double *values)
+void readData(
+    ::precice::string_view          meshName, 
+    ::precice::string_view          dataName, 
+    ::precice::span<const VertexID> ids,
+    double                          relativeReadTime, 
+    ::precice::span<double>         values) const
 ```
 
 is found in the MATLAB bindings as
 
 ```bash
-values = readData(dataID, valueIndices)
+values = readData(meshName, dataName, ids, relativeReadTime)
 ```
 
 ## Out of process variant
