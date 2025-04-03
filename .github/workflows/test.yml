@@ -16,6 +16,7 @@ jobs:
     container:
       image: precice/precice:nightly
     strategy:
+      fail-fast: true
       matrix:
         include:
         # - release: latest  #   R2024b segfaults; 24.2.0.2863752 (R2024b) Update 5
