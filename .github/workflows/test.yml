@@ -23,10 +23,10 @@ jobs:
         - release: R2024a
         - release: R2023b
         - release: R2023a
-        # - release: R2022b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
-        # - release: R2022a # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
-        # - release: R2021b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol:
-        # - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
+        - release: R2022b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
+        - release: R2022a # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
+        - release: R2021b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol:
+        - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
     steps:
       - name: Install Dependencies
         run: |
@@ -61,6 +61,6 @@ jobs:
       - name: Run Solverdummies
         working-directory: examples/solverdummy
         env:
-          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
+          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5:/usr/lib/x86_64-linux-gnu/libpython3.12.so
         run: | 
           run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverOne" & run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverTwo"
