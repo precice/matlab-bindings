@@ -61,6 +61,6 @@ jobs:
       - name: Run Solverdummies
         working-directory: examples/solverdummy
         env:
-          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5:/usr/lib/x86_64-linux-gnu/libpython3.12.so
+          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libstdc++.so.6:/usr/lib/x86_64-linux-gnu/libgfortran.so.5
         run: | 
           run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverOne" & run-matlab-command "addpath('../..'), solverdummy precice-config.xml SolverTwo"
