@@ -26,7 +26,7 @@ jobs:
         - release: R2022b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
         - release: R2022a # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol
         - release: R2021b # errors: /lib/x86_64-linux-gnu/libpython3.12.so.1.0: undefined symbol:
-        - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
+        # - release: R2021a # throws an error: https://github.com/precice/matlab-bindings/pull/42
     steps:
       - name: Install Dependencies
         run: |
