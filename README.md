@@ -6,13 +6,15 @@ Note that the first two digits of the version number of the bindings indicate th
 
 ## Requirements
 
-MATLAB R2018a or later is required. The bindings are actively tested on versions R2023b, R2023a, R2022b, R2022a, and R2021b.
+MATLAB R2018a or later is required. The bindings are actively tested on versions R2024a and R2023b.
+
+⚠️Note that we currently observe problems in our CI pipeline for MATLAB R2024b and R2022b and older. If you are any active user of any of these versions, we would appreciate your feedback under [this issue](https://github.com/precice/matlab-bindings/issues/58)⚠️
 
 ## Restrictions
 
-- An issue causes MATLAB to crash upon SolverInterface initialization if precice was compiled with openmpi. This issue can be resolved by installing openmpi from source using the option `-disable-dlopen`. For reference, see e.g. [here](https://stackoverflow.com/questions/26901663/error-when-running-openmpi-based-library). Alternatively, the user can switch to a different MPI implementation, e.g. MPICH (other implementations were not tested). Note that for [using a different MPI implementation](https://precice.org/installation-source-advanced.html#mpi---build-precice-using-non-default-mpi-implementation) one has to specify the alternative implementation while building preCICE. For more information on this issue, please refer to https://github.com/precice/matlab-bindings/issues/19.
-- Currently, only one instance of the `SolverInterface` class can exist at the same time in a single MATLAB instance. If the user wishes to couple multiple participants based on MATLAB, he is supposed to start them in different MATLAB instances. If, for some reason, the user needs multiple instances of `SolverInterface`, he should use the OOP variant (Multiple instances of `SolverInterfaceOOP` can exist at the same time).
-- There is a known bug, if the `SolverInterface` destructor is called. For a possible workaround refer to https://github.com/precice/precice/issues/378. This issue is tracked in https://github.com/precice/matlab-bindings/issues/28.
+- An issue causes MATLAB to crash upon Participant initialization if preCICE was compiled with OpenMPI. This issue can be resolved by installing OpenMPI from source using the option `-disable-dlopen`. For reference, see e.g. [here](https://stackoverflow.com/questions/26901663/error-when-running-openmpi-based-library). Alternatively, the user can switch to a different MPI implementation, e.g. MPICH (other implementations were not tested). Note that for [using a different MPI implementation](https://precice.org/installation-source-advanced.html#mpi---build-precice-using-non-default-mpi-implementation) one has to specify the alternative implementation while building preCICE. For more information on this issue, please refer to https://github.com/precice/matlab-bindings/issues/19.
+- Currently, only one instance of the `Participant` class can exist at the same time in a single MATLAB instance. If the user wishes to couple multiple participants based on MATLAB, he is supposed to start them in different MATLAB instances. If, for some reason, the user needs multiple instances of `Participant`, he should use the OOP variant (Multiple instances of `ParticipantOOP` can exist at the same time).
+- There is a known bug, if the `Participant` destructor is called. For a possible workaround refer to https://github.com/precice/precice/issues/378. This issue is tracked in https://github.com/precice/matlab-bindings/issues/28.
 
 ## Compilation
 
@@ -34,7 +36,7 @@ To use the bindings, you have to add this folder (e.g. `/home/user/matlab-bindin
 
 ## Usage
 
-The API introduces a MATLAB wrapper class for the `SolverInterface` class and a namespace for the preCICE constants. They are accessible in MATLAB as `precice.SolverInterface` and `precice.constants` respectively.
+The API introduces a MATLAB wrapper class for the `Participant` class and a namespace for the preCICE constants. They are accessible in MATLAB as `precice.Participant` and `precice.constants` respectively.
 
 The function syntax is mostly identical to the syntax of the C++ API. The following things should be noted:
 
@@ -47,21 +49,26 @@ The function syntax is mostly identical to the syntax of the C++ API. The follow
 As an example, the C++ API function
 
 ```bash
-readBlockScalarData(int dataID, int size, const int *valueIndices, double *values)
+void readData(
+    ::precice::string_view          meshName, 
+    ::precice::string_view          dataName, 
+    ::precice::span<const VertexID> ids,
+    double                          relativeReadTime, 
+    ::precice::span<double>         values) const
 ```
 
 is found in the MATLAB bindings as
 
 ```bash
-values = readBlockScalarData(dataID, valueIndices)
+values = readData(meshName, dataName, ids, relativeReadTime)
 ```
 
 ## Out of process variant
 
-The C++ MEX API supports [out of process execution](https://de.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html) of MEX functions. This feature is implemented in the class `precice.SolverInterfaceOOP`. This class works exactly like `precice.SolverInterface`. Internally, however, the gateway function that calls the preCICE routines is run on a `mexHost` object.
+The C++ MEX API supports [out of process execution](https://de.mathworks.com/help/matlab/matlab_external/out-of-process-execution-of-c-mex-functions.html) of MEX functions. This feature is implemented in the class `precice.ParticipantOOP`. This class works exactly like `precice.Participant`. Internally, however, the gateway function that calls the preCICE routines is run on a `mexHost` object.
 This has the following advantages:
 
-- Multiple instances of `SolverInterfaceOOP` can exist at the same time.
+- Multiple instances of `ParticipantOOP` can exist at the same time.
 - If the gateway function crashes, then MATLAB will not crash. Only the mexHost object will crash.
 However, using the OOP variant is **significantly** slower than the normal in process
 
@@ -70,8 +77,8 @@ However, using the OOP variant is **significantly** slower than the normal in pr
 ## `libprecice.so` cannot be found
 
 ```bash
-Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
-libprecice.so.2: cannot open shared object file: No such file or directory.
+Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@Participant/private/preciceGateway.mexa64':
+libprecice.so.3: cannot open shared object file: No such file or directory 
 ```
 
 Tells you that the MATLAB bindings cannot find the C++ library preCICE. Make sure that you [installed preCICE correctly](https://precice.org/installation-source-installation.html#testing-your-installation).
@@ -85,19 +92,27 @@ $ pkg-config --cflags --libs libprecice
 
 If everything until this point looks good and you are still facing problems and you installed preCICE to a custom location using `CMAKE_INSTALL_PREFIX`, MATLAB might not be able to find `libprecice.so`, since it is not discoverable. Please add the location of `libprecice.so` (see `pkg-config --libs-only-L libprecice`, without the `-L`) to your `LD_LIBRARY_PATH`. For further instructions refer to the [MATLAB documentation](https://de.mathworks.com/help/matlab/matlab_external/set-run-time-library-path-on-linux-systems.html).
 
-## version \`GLIBCXX_3.4.26' not found
+## version `GLIBCXX_X.X.XX` not found
 
 ```bash
-Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@SolverInterface/private/preciceGateway.mexa64':
+Invalid MEX-file 'SOMEPATH/matlab-bindings/+precice/@Participant/private/preciceGateway.mexa64':
 /usr/local/MATLAB/R2021a/bin/glnxa64/../../sys/os/glnxa64/libstdc++.so.6:
 version `GLIBCXX_3.4.26' not found (required by /lib/x86_64-linux-gnu/libprecice.so.2)
 ```
 
-Matlab ships with a version of `libstdc++.so.6` that may be too old. This version does not find the preCICE C++ library. By using the system-provided version of `libstdc++.so.6`, you can fix the error.
+MATLAB ships with a version of `libstdc++.so.6` that may be too old. This version does not find the preCICE C++ library. 
 
-So far, this problem was encountered with Ubuntu Version `20.04.04 LTS`, GNU C++ `9.4.0`, on matlab versions `R2020b`, `R2021a`, `R2021b`.
+So far, this problem was encountered with Ubuntu Version `20.04.04 LTS`, GNU C++ `10.5.0`, on MATLAB versions `R2020b (Update 8)`, `R2021a`, `R2021b (Update 7)`. See https://github.com/precice/matlab-bindings/issues/53 for more details.
 
-To solve this error start matlab with the following command:
+There are two possible solutions:
+
+### (recommended) Update your MATLAB installation
+
+This problem does not appear, for example, for MATLAB R2023b (Update 7). For information on how to update MATLAB, please refer to the MATLAB documentation.
+
+### Set `LD_PRELOAD` to use the system-provided `libstdc++.so.6`
+
+Please start MATLAB with the following command:
 
 ```shell
 LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 matlab
