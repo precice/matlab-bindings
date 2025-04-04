@@ -6,7 +6,7 @@ Note that the first two digits of the version number of the bindings indicate th
 
 ## Requirements
 
-MATLAB R2018a or later is required. The bindings are actively tested on versions R2024b, **R2023b, R2023a**, R2022b, R2022a, and R2021b.
+MATLAB R2018a or later is required. The bindings are actively tested on versions R2024a and R2023b.
 
 ⚠️Note that we currently observe problems in our CI pipeline for MATLAB R2024b and R2022b and older. If you are any active user of any of these versions, we would appreciate your feedback under [this issue](https://github.com/precice/matlab-bindings/issues/58)⚠️
 
