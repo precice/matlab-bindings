@@ -247,7 +247,6 @@ classdef Participant < handle
             end
             inSize = length(valueIndices);
             values = preciceGateway(uint8(61),meshName,dataName,int32(inSize),valueIndices,relativeReadTime);
-            values = reshape(values,obj.getDataDimensions(meshName,dataName),[]);
         end
 
         % requiresGradientDataFor

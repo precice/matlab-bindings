@@ -304,7 +304,8 @@ public:
                 const TypedArray<double> relativeReadTime = inputs[5];
                 std::vector<double> values(size[0]*dim);
                 interface->readData(meshName,dataName,vertexIDs,relativeReadTime[0],values);
-                outputs[0] = factory.createArray<double>({1, size[0]*dim}, values.data(), values.data()+values.size());
+                assert(values.size() == dim*vertexIDs.size());
+                outputs[0] = factory.createArray<double>({dim, vertexIDs.size()}, values.data(), values.data()+values.size());
                 break;
             }
             case FunctionID::requiresGradientDataFor:
@@ -339,8 +340,8 @@ public:
                 size_t dim = interface->getMeshDimensions(meshName);
                 std::vector <double> positions(size[0]*dim);
                 interface->getMeshVertexIDsAndCoordinates(meshName,ids,positions);
-                outputs[0] = factory.createArray<int32_t>({size[0]}, ids.data(), ids.data()+ids.size());
-                outputs[1] = factory.createArray<double>({size[0], dim}, positions.data(), positions.data()+positions.size());
+                outputs[0] = factory.createArray<int32_t>({1, ids.size()}, ids.data(), ids.data()+ids.size());
+                outputs[1] = factory.createArray<double>({dim, ids.size()}, positions.data(), positions.data()+positions.size());
                 break;
             } 
 
