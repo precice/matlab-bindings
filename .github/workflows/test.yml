@@ -19,6 +19,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
+        - release: R2025a
         # - release: latest  #   R2024b segfaults; 24.2.0.2863752 (R2024b) Update 5
         - release: R2024a
         - release: R2023b
